@@ -1,0 +1,114 @@
+FarmEye AI — GStreamer Mimari Anlatımı (Bu PC: Windows + GTX 1650)
+====================================================================
+Hedef cihaz: Acer Nitro AN515-44, Windows 11, AMD Ryzen 5 4600H, GTX 1650 (4 GB)
+NOT: Jetson pipeline (nvv4l2decoder / nvvidconv) BU PC'DE ÇALIŞMAZ.
+
+
+1) GStreamer nedir?
+-------------------
+GStreamer, video/ses verisini "boru hattı" (pipeline) ile işleyen bir çerçevedir.
+
+Düşün: fabrika bant sistemi
+  - Her makine = bir ELEMENT (rtspsrc, h264parse, decoder, appsink...)
+  - Bant bağlantısı = PAD / CAPS (veri formatı anlaşması)
+  - Tüm hat = PIPELINE
+
+Veri soldan sağa akar. Bir element bozulursa tüm hat durabilir; bu yüzden
+hata ayıklamada `GST_DEBUG` kullanılır.
+
+
+2) Temel kavramlar
+------------------
+ELEMENT  : Tek iş yapan kutu (kaynak, filtre, sink)
+PAD      : Element'in giriş/çıkış soketi (sink pad / src pad)
+CAPS     : O soketten geçen veri tipi (ör. video/x-h264, video/x-raw)
+BIN      : Element grubu
+PIPELINE : Çalıştırılan ana hat (PLAYING / PAUSED / NULL / READY)
+BUS      : Hata/EOS (end-of-stream) mesajlarının geldiği kanal
+appsink  : Kareleri C++ koduna veren "musluk" (biz buradan okuruz)
+
+
+3) Jetson vs Bu PC (neden farklı?)
+----------------------------------
+Jetson (Linux/Tegra) tipik hat:
+  rtspsrc ! rtph264depay ! h264parse ! nvv4l2decoder ! nvvidconv ! appsink
+
+Bu PC (Windows + GTX 1650) tipik hat:
+  rtspsrc ! rtph264depay ! h264parse ! d3d11h264dec ! ... ! appsink
+
+Açıklama:
+  - nvv4l2decoder / nvvidconv → NVIDIA Jetson (Tegra) eklentileri
+  - d3d11h264dec → Windows Direct3D11 donanım decode (GTX 1650 destekler)
+  - Decode sonrası kareyi CUDA belleğine (GpuMat) biz yükleriz
+
+
+4) FarmEye tek kamera pipeline (hedef)
+--------------------------------------
+RTSP örneği:
+
+  rtspsrc location=rtsp://KAMERA_IP/stream latency=100 !
+    rtph264depay !
+    h264parse !
+    d3d11h264dec !
+    d3d11download !
+    videoconvert !
+    video/x-raw,format=BGR !
+    appsink name=sink emit-signals=true max-buffers=1 drop=true
+
+Element görevleri:
+  rtspsrc       : RTSP'ten ağ paketlerini alır
+  rtph264depay  : RTP paketinden H.264 bitstream çıkarır
+  h264parse     : H.264'ü decoder'ın sevdiği forma getirir
+  d3d11h264dec  : GPU ile decode (CPU'yu yormaz)
+  d3d11download : D3D11 belleğinden sistem/CPU erişilebilir buffer'a indirir
+  videoconvert  : Renk uzayı dönüşümü (BGR — OpenCV/YOLO dostu)
+  appsink       : C++ tarafında frame okuma noktası
+
+USB / test dosyası (öğrenme aşaması, RTSP yokken):
+
+  filesrc location=test.mp4 !
+    decodebin !
+    videoconvert !
+    video/x-raw,format=BGR !
+    appsink name=sink emit-signals=true max-buffers=1 drop=true
+
+
+5) Neden cv::VideoCapture değil?
+--------------------------------
+cv::VideoCapture basit ve yavaş kalabilir; 4 kamera + AI'da:
+  - Gecikme birikir
+  - Thread kontrolü zayıf
+  - HW decode / zero-copy yolları kısıtlı
+
+GStreamer ile:
+  - Her kamera kendi pipeline thread'inde
+  - max-buffers=1 + drop=true → eski kareyi at, canlı kal
+  - HW decode (d3d11) → CPU rahatlar, GTX 1650 decode motoru çalışır
+
+
+6) Sonraki aşama: CUDA + TensorRT + ByteTrack
+--------------------------------------------
+  appsink frame (CPU BGR)
+       ↓  cudaMemcpy / GpuMat upload
+  GPU buffer
+       ↓  TensorRT YOLOv8n (.engine, FP16)
+  Detection kutuları (bbox, score, class)
+       ↓  ByteTrack
+  Track ID'leri (aynı hayvanı kareler boyunca takip)
+
+
+7) Bu donanım için kurallar
+---------------------------
+  - VRAM 4 GB → yolov8n + FP16 + batch=1 + input 640
+  - RAM 8 GB → önce 1 kamera; 4 kamerayı en son aç
+  - Eski sürücü (451.67) yetmez → CUDA 12.x ile uyumlu sürücü şart
+
+
+8) Doğrulama komutları (kurulum sonrası)
+----------------------------------------
+  nvidia-smi
+  nvcc --version
+  gst-launch-1.0 --version
+  gst-inspect-1.0 d3d11h264dec
+  gst-inspect-1.0 appsink
+  trtexec --help

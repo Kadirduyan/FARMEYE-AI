@@ -1,0 +1,74 @@
+GstCameraCapture — Kod Anlatımı (Adım 1.2)
+==========================================
+
+Dosyalar:
+  src/engine/GstCameraCapture.h
+  src/engine/GstCameraCapture.cpp
+
+
+NE YAPAR?
+---------
+Tek bir video kaynağını açar (RTSP kamera VEYA yerel video dosyası),
+GStreamer pipeline kurar, her kareyi BGR formatında C++'a verir.
+
+
+ANA YAPI
+--------
+FrameBuffer
+  width, height, channels=3
+  data = ham BGR baytları (OpenCV Mat / YOLO ön işleme için uygun)
+
+GstCameraCapture
+  open(uri)  → pipeline kur, PLAYING'e geç
+  read(out)  → appsink'ten 1 kare çek
+  close()    → pipeline'ı kapat
+
+
+PIPELINE MANTIĞI (buildPipeline)
+--------------------------------
+1) Dosya ise (mp4/avi/mkv veya C:\... yolu):
+   filesrc ! decodebin ! videoconvert ! video/x-raw,format=BGR ! appsink
+
+   Neden? Test için RTSP gerekmez; önce dosyayla öğreniriz.
+
+2) RTSP ise:
+   rtspsrc ! rtph264depay ! h264parse ! d3d11h264dec !
+   d3d11download ! videoconvert ! video/x-raw,format=BGR ! appsink
+
+   Element sırası:
+     rtspsrc       → ağdan RTSP alır
+     rtph264depay  → RTP → H264
+     h264parse     → decoder için düzenler
+     d3d11h264dec  → GTX 1650 HW decode (Windows; Jetson değil!)
+     d3d11download → GPU decode buffer → CPU erişilebilir
+     videoconvert  → BGR
+     appsink       → C++ okuma noktası
+
+   appsink ayarları:
+     max-buffers=1  → kuyrukta 1 kare
+     drop=true      → eski kareyi at (canlı izleme)
+     sync=false     → duvar saatine kilitlenme (düşük gecikme)
+
+
+HAVE_GSTREAMER
+--------------
+CMake GStreamer bulursa -DHAVE_GSTREAMER=1 tanımlar.
+Bulamazsa open()/read() false döner ve konsola uyarı yazar.
+Böylece Qt UI, GStreamer olmadan da derlenebilir.
+
+
+read() NASIL ÇALIŞIR?
+---------------------
+1) gst_app_sink_try_pull_sample (500 ms timeout)
+2) Caps'ten width/height oku
+3) GstBuffer'ı map et (GST_MAP_READ)
+4) Baytları FrameBuffer.data'ya kopyala
+5) unmap + sample unref
+
+
+SONRAKİ ADIMLAR
+---------------
+1.3 CUDA: FrameBuffer → GpuMat / cudaMemcpy
+1.4 InferenceEngine: .engine ile tespit
+1.5 ByteTrack: ID eşleme
+1.6 4 kamera VisionEngine

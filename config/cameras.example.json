@@ -1,0 +1,32 @@
+{
+  "cameras": [
+    {
+      "id": 0,
+      "name": "Camera 1",
+      "deviceIndex": 0,
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": 1,
+      "name": "Camera 2",
+      "deviceIndex": 1,
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "name": "Camera 3",
+      "deviceIndex": -1,
+      "url": "rtsp://192.168.1.10:554/stream1",
+      "enabled": false
+    },
+    {
+      "id": 3,
+      "name": "Camera 4",
+      "deviceIndex": -1,
+      "url": "rtsp://192.168.1.11:554/stream1",
+      "enabled": false
+    }
+  ]
+}

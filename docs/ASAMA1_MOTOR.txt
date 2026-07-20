@@ -1,0 +1,50 @@
+Aşama 1 — Çekirdek Motor Anlatımı
+=================================
+Hedef: farmeye_engine.exe (konsol, UI yok)
+
+
+AKIŞ
+----
+  Kaynak (webcam / video / rtsp)
+    → GstCameraCapture (GStreamer, düşük gecikme)
+    → BGR kare
+    → letterbox 640x640 (OpenCV)
+    → InferenceEngine (YOLOv8n ONNX / OpenCV DNN)
+    → ClassPolicy (inek / insan / başka canlı)
+    → Tracker (ByteTrack-benzeri IoU ID)
+    → Konsol: ID: 001 - Konum: X,Y
+
+
+DOSYALAR
+--------
+  src/engine/GstCameraCapture.*   kamera yakalama
+  src/engine/preprocess.*         640 letterbox + ters map
+  src/engine/InferenceEngine.*    YOLO tespit
+  src/engine/class_policy.*       COCO → Türkçe etiket
+  src/tracking/tracker.*          sabit ID takibi
+  src/engine/engine_main.cpp      ana döngü
+
+
+ÇALIŞTIRMA
+----------
+  build-engine\farmeye_engine.exe webcam
+  build-engine\farmeye_engine.exe C:\path\video.mp4
+
+  PATH'te GStreamer bin olmali:
+  %LOCALAPPDATA%\Programs\gstreamer\1.0\msvc_x86_64\bin
+
+
+NOT: TensorRT
+-------------
+  models/yolov8n_fp16.engine Python ile üretildi.
+  C++ tarafinda TensorRT SDK header yok; simdilik OpenCV DNN + yolov8n.onnx.
+  .engine verilirse yanindaki .onnx otomatik secilir.
+  TensorRT C++ SDK kurulunca ayni InferenceEngine API'sine baglanacak.
+
+
+SINIF POLITIKASI
+----------------
+  cow (19)     → inek (takip)
+  person (0)   → insan + UYARI
+  diger hayvan → başka canlı + UYARI
+  cansiz       → yok say

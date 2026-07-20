@@ -1,0 +1,2 @@
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build/CMakeFiles/ZERO_CHECK.dir

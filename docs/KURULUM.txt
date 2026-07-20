@@ -1,0 +1,12 @@
+FarmEye AI — Ortam Kurulum Durumu
+=================================
+Tarih: 18 Temmuz 2026
+
+AŞAMA 0 (ortam): TAMAM
+AŞAMA 1 (cekirdek motor): TAMAM — farmeye_engine.exe
+
+Calistirma:
+  build-engine\farmeye_engine.exe webcam
+  build-engine\farmeye_engine.exe video.mp4
+
+Detay: docs/ASAMA1_MOTOR.txt

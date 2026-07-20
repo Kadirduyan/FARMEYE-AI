@@ -1,0 +1,3 @@
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-engine/CMakeFiles/farmeye_engine.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-engine/CMakeFiles/edit_cache.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-engine/CMakeFiles/rebuild_cache.dir

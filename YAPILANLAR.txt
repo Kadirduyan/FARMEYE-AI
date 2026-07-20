@@ -1,0 +1,194 @@
+FarmEye AI — Yapılan Değişiklikler
+====================================
+Tarih: 18 Temmuz 2026
+
+Bu dosya, proje başlangıcında adım adım nelerin oluşturulduğunu / değiştirildiğini kaydeder.
+
+
+ADIМ 1 — IDE kararı
+--------------------
+- Ana geliştirme ortamı: Cursor (VS Code tabanlı)
+- Framework: Qt6 Widgets + OpenGL
+- Qt Creator: yalnızca gerekirse .ui tasarımı için yan araç
+
+
+ADIМ 2 — Klasör yapısı oluşturuldu
+----------------------------------
+Yeni klasörler:
+  config/
+  resources/
+  src/core/
+  src/camera/
+  src/tracking/
+  src/ui/
+
+Amaç: Kamera, takip ve arayüz kodlarını birbirinden ayırmak; proje büyürken karışıklığı önlemek.
+
+
+ADIМ 3 — Ortak tipler ve ayar (src/core/)
+-----------------------------------------
+Oluşturulan dosyalar:
+  src/core/types.h
+    - CameraId (Cam1..Cam4)
+    - CameraConfig (isim, USB index, RTSP URL, enabled)
+
+  src/core/config.h
+  src/core/config.cpp
+    - Config::loadCameras() — JSON dosyasından 4 kamera ayarını okur
+    - Dosya yoksa varsayılan (disabled) kameralar döner
+
+
+ADIМ 4 — Kamera katmanı (src/camera/) — STUB
+--------------------------------------------
+Oluşturulan dosyalar:
+  src/camera/camera_source.h
+  src/camera/camera_source.cpp
+    - Tek kamera kaynağı iskeleti
+    - open() / close() şimdilik gerçek capture yapmıyor
+
+  src/camera/camera_manager.h
+  src/camera/camera_manager.cpp
+    - 4 kamerayı yönetir
+    - setConfigs / startAll / stopAll
+    - frameReady sinyali (ileride UI'ye bağlanacak)
+
+
+ADIМ 5 — Takip katmanı (src/tracking/) — STUB
+---------------------------------------------
+Oluşturulan dosyalar:
+  src/tracking/tracker.h
+  src/tracking/tracker.cpp
+    - Tracker iskeleti
+    - processFrame() henüz boş (sonraki adımlarda doldurulacak)
+
+
+ADIМ 6 — Arayüz (src/ui/)
+-------------------------
+Oluşturulan dosyalar:
+  src/ui/video_widget.h
+  src/ui/video_widget.cpp
+    - Tek kamera görüntü alanı (placeholder)
+    - Başlık + "No signal" / "Ready (stub)" / "Disabled" durumu
+
+  src/ui/mainwindow.h
+  src/ui/mainwindow.cpp
+  src/ui/mainwindow.ui
+    - Ana pencere
+    - 2x2 grid ile 4 VideoWidget
+    - CameraManager + Tracker oluşturulur
+    - config/cameras.example.json okunur
+
+
+ADIМ 7 — Uygulama girişi
+------------------------
+Oluşturulan dosya:
+  src/main.cpp
+    - QApplication başlatır
+    - MainWindow gösterir
+
+
+ADIМ 8 — Config ve kaynak örnekleri
+-----------------------------------
+Oluşturulan dosyalar:
+  config/cameras.example.json
+    - 4 kamera örneği (USB index + RTSP URL örnekleri)
+
+  resources/app.qrc
+    - Qt resource dosyası (şimdilik boş; ikon vb. için hazır)
+
+
+ADIМ 9 — CMakeLists.txt güncellendi
+-----------------------------------
+Değiştirilen dosya:
+  CMakeLists.txt
+
+Yapılanlar:
+  - Tüm yeni .cpp / .h / .ui / .qrc dosyaları eklendi
+  - target_include_directories: src/ eklendi (ör. #include "core/types.h")
+  - Qt6::Widgets ve Qt6::OpenGL bağlandı
+  - C++17 zorunlu kılındı
+
+
+ADIМ 10 — Derleme denemesi
+--------------------------
+- Visual Studio içindeki CMake bulundu (cmake 4.3.1-msvc1)
+- Qt6 sistemde bulunamadı (C:\Qt vb. yok)
+- Sonuç: CMake configure "Could not find Qt6" hatası verdi
+- Kod iskeleti hazır; derleme için Qt 6 (MSVC) kurulumu gerekli
+
+
+ADIМ 11 — Bu kayıt dosyası
+--------------------------
+Oluşturulan dosya:
+  YAPILANLAR.txt
+    - Yukarıdaki adımların özeti (bu dosya)
+
+
+ADIМ 12 — Qt kurulumuna geçiş
+-----------------------------
+- Qt Online Installer indirildi ve kuruldu
+- Kurulu kit: Qt 6.11.1 MinGW 64-bit (C:\Qt\6.11.1\mingw_64)
+- Not: MSVC kit seçilmedi; şimdilik MinGW ile derliyoruz
+
+
+ADIМ 13 — İlk başarılı derleme
+------------------------------
+- build-mingw/ klasöründe Ninja + MinGW ile configure/build
+- Düzeltme: camera_manager.h içinde QVector<unique_ptr> → std::vector
+  (QVector move-only tip desteklemez)
+- FarmEyeAI.exe üretildi ve çalıştırıldı
+- Ana pencere: 2x2 kamera placeholder grid
+
+
+ADIМ 14 — Edge AI ortam kurulumu (bu PC)
+----------------------------------------
+Tamamlananlar:
+  - NVIDIA sürücü 561.17 + CUDA Toolkit 12.6 (nvcc OK)
+  - cuDNN 9.24 (pip nvidia-cudnn-cu12) + TensorRT 10.6 (CUDA 12)
+  - GStreamer 1.28.5 MSVC (headers + d3d11h264dec + appsink)
+    Yol: %LOCALAPPDATA%\Programs\gstreamer\1.0\msvc_x86_64
+  - Qt 6.8.3 MSVC 2022 64-bit (C:\Qt\6.8.3\msvc2022_64)
+    (MinGW 6.11.1 de duruyor)
+  - Python 3.12: sadece yardımcı (aqt + engine build), proje dili C++
+
+
+ADIМ 15 — Model engine
+----------------------
+  models/yolov8n.onnx  (masaüstünden kopyalandı)
+  models/yolov8n_fp16.engine  (~9.4 MB, FP16, TensorRT 10.6)
+  scripts/build_engine.py / build_engine.bat
+
+
+ADIМ 16 — Motor iskeleti + doküman
+----------------------------------
+  src/engine/GstCameraCapture.*  (GStreamer tek akış, HAVE_GSTREAMER)
+  src/engine/InferenceEngine.*   (TensorRT stub)
+  src/engine/VisionEngine.*      (4 kam orkestrasyon stub)
+  docs/GSTREAMER_MIMARI.txt
+  docs/GST_CAMERA_ANLATIM.txt
+  docs/MOTOR_ANLATIM.txt
+  docs/KURULUM.txt
+
+
+SONRAKI ADIM
+------------
+1) InferenceEngine'i gercek TensorRT C++ SDK ile .engine'e bagla (opsiyonel hiz)
+2) CUDA GpuMat zero-copy
+3) Tam ByteTrack third_party
+4) 4 kamera VisionEngine
+5) Qt UI'ye kutu cizimi
+
+
+ADIМ 18 — OneDrive carpi + klasor duzeni
+----------------------------------------
+- Kirmizi carpi = OneDrive 5GB doluluk / senkron hatasi (kod hatasi degil)
+- Agir veriler tasindi: C:\FarmEyeData\
+    01_cattle_side_rear\
+    02_cbvd5_videos\
+    03_cbvd5_labels\   (etiketleri buraya indir)
+    04_models_cache\
+- Proje icinde datasets/ sadece README birakti
+- PROJE_YAPISI.txt eklendi
+- .gitignore guncellendi (build + datasets)
+
+

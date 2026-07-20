@@ -1,0 +1,5 @@
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/CMakeFiles/FarmEyeAI.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/CMakeFiles/edit_cache.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/CMakeFiles/rebuild_cache.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/CMakeFiles/FarmEyeAI_autogen_timestamp_deps.dir
+C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/CMakeFiles/FarmEyeAI_autogen.dir

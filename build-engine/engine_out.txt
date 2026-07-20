@@ -1,0 +1,146 @@
+=== FarmEye Engine ===
+Kaynak: webcam
+Model : C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/models/yolov8n_fp16.engine
+[InferenceEngine] Yuklendi: C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/models\yolov8n.onnx
+[GstCameraCapture] pipeline: mfvideosrc device-index=0 ! videoconvert ! video/x-raw,format=BGR ! appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false
+Calisiyor... (Ctrl+C ile durdur)
+[debug] letterbox kaydedildi: C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/models/debug_640.jpg
+--- frame 1 ---
+ID: 001 - Konum: 695,627 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 2 ---
+ID: 001 - Konum: 707,607 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 3 ---
+ID: 001 - Konum: 716,608 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 4 ---
+ID: 001 - Konum: 728,601 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 5 ---
+ID: 001 - Konum: 733,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 6 ---
+ID: 001 - Konum: 736,606 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 7 ---
+ID: 001 - Konum: 751,609 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 8 ---
+ID: 001 - Konum: 761,606 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 9 ---
+ID: 001 - Konum: 762,603 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 10 ---
+ID: 001 - Konum: 765,601 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 11 ---
+ID: 001 - Konum: 763,602 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 12 ---
+ID: 001 - Konum: 763,599 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 13 ---
+ID: 001 - Konum: 765,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 14 ---
+ID: 001 - Konum: 764,599 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 15 ---
+ID: 001 - Konum: 765,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 16 ---
+ID: 001 - Konum: 761,601 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 17 ---
+ID: 001 - Konum: 760,606 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 18 ---
+ID: 001 - Konum: 760,609 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 19 ---
+ID: 001 - Konum: 759,615 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 20 ---
+ID: 001 - Konum: 760,613 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 21 ---
+ID: 001 - Konum: 760,608 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 22 ---
+ID: 001 - Konum: 760,603 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 23 ---
+ID: 001 - Konum: 760,602 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 24 ---
+ID: 001 - Konum: 766,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 25 ---
+ID: 001 - Konum: 763,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 26 ---
+ID: 001 - Konum: 764,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 27 ---
+ID: 001 - Konum: 761,595 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 28 ---
+ID: 001 - Konum: 761,599 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 29 ---
+ID: 001 - Konum: 760,602 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 30 ---
+ID: 001 - Konum: 756,609 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 31 ---
+ID: 001 - Konum: 756,611 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 32 ---
+ID: 001 - Konum: 756,612 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 33 ---
+ID: 001 - Konum: 757,610 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 34 ---
+ID: 001 - Konum: 757,608 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 35 ---
+ID: 001 - Konum: 760,603 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 36 ---
+ID: 001 - Konum: 761,602 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 37 ---
+ID: 001 - Konum: 759,601 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 38 ---
+ID: 001 - Konum: 765,600 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 39 ---
+ID: 001 - Konum: 764,599 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 40 ---
+ID: 001 - Konum: 760,603 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 41 ---
+ID: 001 - Konum: 754,606 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 42 ---
+ID: 001 - Konum: 754,613 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 43 ---
+ID: 001 - Konum: 754,613 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 44 ---
+ID: 001 - Konum: 754,608 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 45 ---
+ID: 001 - Konum: 754,607 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 46 ---
+ID: 001 - Konum: 756,606 - Tip: insan
+UYARI: insan (ID: 001)
+--- frame 47 -

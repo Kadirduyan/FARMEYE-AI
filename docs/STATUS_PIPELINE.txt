@@ -1,0 +1,38 @@
+FARMEYE AI — Pipeline.txt karşılığı (dürüst durum)
+==================================================
+Asıl proje: C:\FarmEye\FARMEYE-AI
+Masaüstü:   FARMEYE AI.lnk  → bu klasöre kısayol olmalı (tam kopya değil)
+
+AŞAMA 1 — Çekirdek motor
+------------------------
+[EVET] GStreamer yakalama (cv::VideoCapture değil) — GstCameraCapture
+[EVET] Letterbox 640x640 — preprocess
+[KISMEN] YOLO nano + TensorRT:
+         - .engine üretildi (Python); C++ tarafı OpenCV DNN + yolov8n.onnx
+         - TensorRT C++ SDK bu PC'de yoktu
+[EVET] ByteTrack-benzeri IoU tracker + sabit ID
+[EVET] Konsol: "ID: 001 - Konum: X,Y" — farmeye_engine
+
+AŞAMA 2 — Analiz / karar
+------------------------
+[YOK] ConductVision iskelet takibi — henüz yok
+[YOK] LSTM davranış sınıflandırıcı — henüz yok
+[STUB] Anormal bayrağı: hareketsizlik eşiği (UI alertRaised API hazır)
+
+AŞAMA 3 — Qt6 arayüz
+--------------------
+[KOD HAZIR] QOpenGLWidget (VideoGLWidget) + ID kutuları
+[KOD HAZIR] Sol uyarı paneli + 5 sn clip buffer
+[KOD HAZIR] Üst sistem: CPU/RAM API + GPU nvidia-smi (1 sn)
+[KOD HAZIR] Sağ 6 kamera seçici (config/cameras.json)
+[KOD HAZIR] BAŞLAT / DURAKLAT + AI durumu
+
+DERLEME / ÇALIŞMA
+-----------------
+Bu ajan oturumunda PowerShell ENOENT yüzünden otomatik derleme DOĞRULANAMADI.
+Sen doğrula:
+  1) Çift tık: C:\FarmEye\FARMEYE-AI\build_ui.bat
+  2) Çalıştır: C:\FarmEye\FARMEYE-AI\build-ui\FarmEyeAI.exe
+
+Temizlenen eski placeholder'lar (CMake'de yoktu):
+  video_widget.*, mainwindow.ui, camera/*, core/types+config, VisionEngine stub

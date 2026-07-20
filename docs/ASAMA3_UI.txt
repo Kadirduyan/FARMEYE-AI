@@ -1,0 +1,32 @@
+Aşama 3 — Qt6 Mockup Dashboard
+================================
+
+Konum: C:\FarmEye\FARMEYE-AI  (OneDrive değil)
+
+Derleme (MSVC + Qt 6.8.3):
+  build_ui.bat
+veya:
+  vcvars64.bat
+  cmake -B build-ui -G Ninja -DCMAKE_BUILD_TYPE=Release ^
+    -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+    -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64 ^
+    -DFARMEYE_BUILD_UI=ON
+  cmake --build build-ui --config Release
+
+Çalıştır: build-ui\FarmEyeAI.exe
+
+UI parçaları:
+  src/ui/mainwindow.*          — mockup layout
+  src/ui/video_gl_widget.*     — QOpenGLWidget + kutular
+  src/ui/alert_list_panel.*    — uyarı listesi
+  src/ui/clip_player_dialog.*  — 5 sn clip
+  src/ui/camera_grid_panel.*   — 6 kamera
+  src/ui/system_status_bar.*   — CPU/GPU/RAM
+  src/ui/theme.qss             — koyu tema
+  src/app/pipeline_controller.* — BAŞLAT/DURAKLAT
+  src/app/frame_ring_buffer.*  — 5 sn ring
+  src/app/system_monitor.*     — 1 sn metrik
+  config/cameras.json          — 6 slot URI
+
+Not: Aşama 2 sağlık yok; anormal = hareketsizlik stub.
+     alertRaised API Stage 2 HealthMonitor için hazır.

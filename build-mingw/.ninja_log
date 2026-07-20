@@ -1,0 +1,23 @@
+# ninja log v6
+42	6944	8060902199691791	FarmEyeAI_autogen/timestamp	7e986041f8317c97
+42	6944	8060902199691791	FarmEyeAI_autogen/mocs_compilation.cpp	7e986041f8317c97
+42	6944	8060902199691791	C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/FarmEyeAI_autogen/timestamp	7e986041f8317c97
+42	6944	8060902199691791	C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/FarmEyeAI_autogen/mocs_compilation.cpp	7e986041f8317c97
+6959	7235	8060902204697456	FarmEyeAI_autogen/3YJK5W5UP7/qrc_app.cpp	ceb13e5035646cda
+6959	7235	8060902204697456	C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/FarmEyeAI_autogen/3YJK5W5UP7/qrc_app.cpp	ceb13e5035646cda
+7344	7906	8060902206072366	CMakeFiles/FarmEyeAI.dir/FarmEyeAI_autogen/3YJK5W5UP7/qrc_app.cpp.obj	d39703e19df0f7da
+7301	15176	8060902205643342	CMakeFiles/FarmEyeAI.dir/src/tracking/tracker.cpp.obj	5dfb3ea9a1ac77f2
+7273	15189	8060902205357545	CMakeFiles/FarmEyeAI.dir/src/camera/camera_source.cpp.obj	83857e50c9bd5711
+7331	16042	8060902205933309	CMakeFiles/FarmEyeAI.dir/src/ui/video_widget.cpp.obj	4e8e7bebdc586221
+7248	16881	8060902205107417	CMakeFiles/FarmEyeAI.dir/src/main.cpp.obj	54f686994fdcab72
+7236	17028	8060902204977455	CMakeFiles/FarmEyeAI.dir/FarmEyeAI_autogen/mocs_compilation.cpp.obj	dbf7f69a587a82d0
+7315	17558	8060902205798123	CMakeFiles/FarmEyeAI.dir/src/ui/mainwindow.cpp.obj	d43270107423705d
+7259	19017	8060902205217546	CMakeFiles/FarmEyeAI.dir/src/core/config.cpp.obj	dbf99d97000244c0
+47	1145	8060902441950082	FarmEyeAI_autogen/timestamp	7e986041f8317c97
+47	1145	8060902441950082	FarmEyeAI_autogen/mocs_compilation.cpp	7e986041f8317c97
+47	1145	8060902441950082	C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/FarmEyeAI_autogen/timestamp	7e986041f8317c97
+47	1145	8060902441950082	C:/Users/kadir/OneDrive/Desktop/FARMEYE AI/build-mingw/FarmEyeAI_autogen/mocs_compilation.cpp	7e986041f8317c97
+1154	4350	8060902443165694	CMakeFiles/FarmEyeAI.dir/src/camera/camera_manager.cpp.obj	fffd4385c0d0240
+1147	5290	8060902443095754	CMakeFiles/FarmEyeAI.dir/FarmEyeAI_autogen/mocs_compilation.cpp.obj	dbf7f69a587a82d0
+1161	5310	8060902443235720	CMakeFiles/FarmEyeAI.dir/src/ui/mainwindow.cpp.obj	d43270107423705d
+5310	5832	8060902484743393	FarmEyeAI.exe	8ff73af76692fbd8

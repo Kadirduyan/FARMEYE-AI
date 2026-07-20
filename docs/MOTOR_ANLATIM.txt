@@ -1,0 +1,61 @@
+FarmEye AI — Motor Katmanı Anlatımı
+===================================
+
+Dosyalar (src/engine/)
+----------------------
+
+1) GstCameraCapture.h / .cpp
+   Ne işe yarar?
+     Tek bir video kaynağını (RTSP veya dosya) GStreamer ile açıp
+     appsink'ten BGR kare okur.
+
+   open(uri)
+     URI'ye göre pipeline kurar, PLAYING durumuna geçer.
+
+   read(FrameBuffer)
+     appsink'ten bir kare çeker; data = ham BGR baytları.
+
+   Neden ayrı sınıf?
+     Kamera yakalama ≠ AI. Böylece TensorRT değişince kamera kodu bozulmaz.
+
+
+2) InferenceEngine.h / .cpp
+   Ne işe yarar?
+     models/yolov8n_fp16.engine dosyasını TensorRT ile yükler,
+     bir karede nesne tespiti (Detection: kutu + skor + sınıf) döner.
+
+   loadEngine(path)
+     .engine deserialize + CUDA context.
+
+   infer(bgr, w, h, out)
+     Ön işleme → GPU → TensorRT → NMS → Detection listesi.
+
+
+3) VisionEngine.h / .cpp
+   Ne işe yarar?
+     En fazla 4 GstCameraCapture'ı yönetir (orkestrasyon).
+     İleride her kareyi InferenceEngine + ByteTrack'e gönderecek.
+
+   start(uris[4])
+     Dolu URI'leri açar.
+
+   stop()
+     Tüm kameraları kapatır.
+
+
+Akış (hedef)
+------------
+  Kamera URI
+    → GstCameraCapture.read()
+    → (CUDA upload)
+    → InferenceEngine.infer()
+    → ByteTrack
+    → Track ID'li kutular
+    → (sonra) UI
+
+
+Kurulum bağımlılıkları
+----------------------
+  GstCameraCapture  → GStreamer (d3d11h264dec, appsink)
+  InferenceEngine   → CUDA + TensorRT
+  VisionEngine      → ikisini birleştirir
