@@ -1,6 +1,0 @@
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/farmeye_engine.dir
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/FarmEyeAI.dir
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/edit_cache.dir
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/rebuild_cache.dir
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/FarmEyeAI_autogen_timestamp_deps.dir
-C:/FarmEye/FARMEYE-AI/build-ui/CMakeFiles/FarmEyeAI_autogen.dir

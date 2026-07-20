@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/FarmEye/FARMEYE-AI/build-ui/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
