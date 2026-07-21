@@ -19,9 +19,11 @@ public:
 public slots:
     void addAlert(const farmeye::AlertEvent &alert);
     void requestPlay(const farmeye::AlertEvent &alert) { emit playClipRequested(alert); }
+    void requestName(const farmeye::AlertEvent &alert) { emit namePersonRequested(alert); }
 
 signals:
     void playClipRequested(farmeye::AlertEvent alert);
+    void namePersonRequested(farmeye::AlertEvent alert);
 
 private:
     void rebuildList();

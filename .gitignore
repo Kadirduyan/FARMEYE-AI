@@ -1,0 +1,12 @@
+﻿build/
+build-ui/
+build-*/
+*.user
+.vs/
+CMakeCache.txt
+compile_commands.json
+__pycache__/
+.DS_Store
+*.pptx
+*.docx
+Desktop/

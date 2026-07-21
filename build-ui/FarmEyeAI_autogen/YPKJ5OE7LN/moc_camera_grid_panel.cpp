@@ -42,7 +42,12 @@ template <> constexpr inline auto farmeye::CameraGridPanel::qt_create_metaobject
         "cameraSelected",
         "",
         "id",
-        "uri"
+        "uri",
+        "setThumbFrame",
+        "camId",
+        "QImage",
+        "frame",
+        "activeId"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -50,6 +55,12 @@ template <> constexpr inline auto farmeye::CameraGridPanel::qt_create_metaobject
         QtMocHelpers::SignalData<void(int, const QString &)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Int, 3 }, { QMetaType::QString, 4 },
         }}),
+        // Slot 'setThumbFrame'
+        QtMocHelpers::SlotData<void(int, const QImage &)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 6 }, { 0x80000000 | 7, 8 },
+        }}),
+        // Slot 'activeId'
+        QtMocHelpers::SlotData<int() const>(9, 2, QMC::AccessPublic, QMetaType::Int),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -74,6 +85,9 @@ void farmeye::CameraGridPanel::qt_static_metacall(QObject *_o, QMetaObject::Call
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->cameraSelected((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 1: _t->setThumbFrame((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QImage>>(_a[2]))); break;
+        case 2: { int _r = _t->activeId();
+            if (_a[0]) *reinterpret_cast<int*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     }
@@ -102,14 +116,14 @@ int farmeye::CameraGridPanel::qt_metacall(QMetaObject::Call _c, int _id, void **
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 3;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 3)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 3;
     }
     return _id;
 }

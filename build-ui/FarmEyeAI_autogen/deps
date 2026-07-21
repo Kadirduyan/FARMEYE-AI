@@ -77,14 +77,15 @@ FarmEyeAI_autogen/timestamp: \
 	C:/Program\ Files/Microsoft\ Visual\ Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/Platform/Windows.cmake \
 	C:/Program\ Files/Microsoft\ Visual\ Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/Platform/WindowsPaths.cmake \
 	C:/Program\ Files/Microsoft\ Visual\ Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/SelectLibraryConfigurations.cmake \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QCoreApplication \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QDateTime \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QEventLoop \
+	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QElapsedTimer \
+	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QHash \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QMetaType \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QMutex \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QObject \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QString \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QThread \
+	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QTimer \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QVector \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/q17memory.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/q20bit.h \
@@ -125,14 +126,12 @@ FarmEyeAI_autogen/timestamp: \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontainerinfo.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontainertools_impl.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontiguouscache.h \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreapplication.h \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreapplication_platform.h \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreevent.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdarwinhelpers.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdatastream.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdatetime.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdeadlinetimer.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdebug.h \
+	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qelapsedtimer.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qendian.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qeventloop.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qexceptionhandling.h \
@@ -163,7 +162,6 @@ FarmEyeAI_autogen/timestamp: \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qminmax.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qmutex.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnamespace.h \
-	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnativeinterface.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnumeric.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qobject.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qobject_impl.h \
@@ -211,6 +209,7 @@ FarmEyeAI_autogen/timestamp: \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtextstream.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtformat_impl.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qthread.h \
+	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtimer.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtmetamacros.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtnoop.h \
 	C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtpreprocessorsupport.h \
@@ -493,6 +492,29 @@ FarmEyeAI_autogen/timestamp: \
 	C:/vcpkg/installed/x64-windows/share/Qt6OpenGLWidgets/Qt6OpenGLWidgetsTargets.cmake \
 	C:/vcpkg/installed/x64-windows/share/Qt6OpenGLWidgets/Qt6OpenGLWidgetsTargetsPrecheck.cmake \
 	C:/vcpkg/installed/x64-windows/share/Qt6OpenGLWidgets/Qt6OpenGLWidgetsVersionlessAliasTargets.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginAdditionalTargetInfo.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginConfig.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginTargets-debug.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginTargets-release.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginTargets.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QPSQLDriverPluginTargetsPrecheck.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginAdditionalTargetInfo.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginConfig.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginTargets-debug.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginTargets-release.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginTargets.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6QSQLiteDriverPluginTargetsPrecheck.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlAdditionalTargetInfo.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlConfig.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlConfigVersion.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlConfigVersionImpl.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlDependencies.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlPlugins.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlTargets-debug.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlTargets-release.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlTargets.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlTargetsPrecheck.cmake \
+	C:/vcpkg/installed/x64-windows/share/Qt6Sql/Qt6SqlVersionlessAliasTargets.cmake \
 	C:/vcpkg/installed/x64-windows/share/Qt6Widgets/Qt6QModernWindowsStylePluginAdditionalTargetInfo.cmake \
 	C:/vcpkg/installed/x64-windows/share/Qt6Widgets/Qt6QModernWindowsStylePluginConfig.cmake \
 	C:/vcpkg/installed/x64-windows/share/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-debug.cmake \

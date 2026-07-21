@@ -40,7 +40,7 @@ public:
 private:
     bool m_loaded = false;
     cv::dnn::Net m_net;
-    int m_inputSize = 640;
+    int m_inputSize = 640; // ONNX sabit 640 — 416 çökertiyor
 };
 
 } // namespace farmeye

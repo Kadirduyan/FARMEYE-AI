@@ -1,6 +1,7 @@
 #pragma once
 
 // GstCameraCapture — webcam / file / rtsp / usb için GStreamer yakalama.
+// Düşük CPU: videoscale + videorate (varsayılan 640x360 @ 12 fps).
 
 #include <cstdint>
 #include <string>
@@ -23,12 +24,9 @@ public:
     GstCameraCapture(const GstCameraCapture &) = delete;
     GstCameraCapture &operator=(const GstCameraCapture &) = delete;
 
-    // URI örnekleri:
-    //   "webcam" / "webcam:0"
-    //   "C:/videos/test.mp4" veya "file:///C:/videos/test.mp4"
-    //   "rtsp://192.168.1.10/stream"
-    //   "usb:0" (ileride; şimdilik webcam ile aynı)
-    bool open(const std::string &uri);
+    // URI: webcam:N | usb:N | rtsp://... | dosya yolu
+    bool open(const std::string &uri, int maxW = 640, int maxH = 360);
+    bool open(const std::string &uri, int maxW, int maxH, int fps);
     void close();
     bool isOpen() const { return m_open; }
 

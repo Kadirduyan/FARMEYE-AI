@@ -8,13 +8,16 @@
 
 #include <QApplication>
 #include <QComboBox>
+#include <QDateTime>
 #include <QFile>
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTimer>
@@ -31,12 +34,23 @@ MainWindow::MainWindow(QWidget *parent)
     loadTheme();
     loadCamerasConfig();
 
-    connect(&m_pipeline, &PipelineController::frameReady, m_video, &VideoGLWidget::setFrame);
+    connect(&m_pipeline, &PipelineController::frameReady, this,
+            [this](const QImage &, const QVector<farmeye::TrackOverlay> &tracks) {
+                m_video->setTracks(tracks);
+            });
+    connect(&m_pipeline, &PipelineController::thumbFrameReady, this,
+            [this](int camId, const QImage &frame) {
+                m_cameras->setThumbFrame(camId, frame);
+                if (camId == m_cameras->activeId()) {
+                    m_video->setImage(frame);
+                }
+            });
     connect(&m_pipeline, &PipelineController::alertRaised, this, &MainWindow::onAlert);
     connect(&m_pipeline, &PipelineController::runningChanged, this, &MainWindow::onRunningChanged);
     connect(&m_pipeline, &PipelineController::statusMessage, m_statusMsg, &QLabel::setText);
 
     connect(m_alerts, &AlertListPanel::playClipRequested, this, &MainWindow::onPlayClip);
+    connect(m_alerts, &AlertListPanel::namePersonRequested, this, &MainWindow::onNamePerson);
     connect(m_cameras, &CameraGridPanel::cameraSelected, this, &MainWindow::onCameraSelected);
 
     connect(&m_sysMonitor, &SystemMonitor::statsUpdated, m_statusBar, &SystemStatusBar::updateStats);
@@ -228,8 +242,22 @@ void MainWindow::loadCamerasConfig()
         camList.push_back(s);
     }
     m_cameras->setCameras(camList);
-    if (!camList.isEmpty() && camList[0].enabled && !camList[0].uri.isEmpty()) {
-        m_pipeline.setCameraUri(camList[0].uri);
+
+    int firstActive = -1;
+    for (const auto &s : camList) {
+        if (s.enabled && !s.uri.isEmpty()) {
+            m_pipeline.setCameraUri(s.id, s.uri);
+            if (firstActive < 0) {
+                firstActive = s.id;
+            }
+        } else {
+            m_pipeline.setCameraUri(s.id, QString());
+        }
+    }
+    if (firstActive >= 0) {
+        m_pipeline.setActiveCamera(firstActive);
+    } else {
+        m_pipeline.setActiveCamera(0);
     }
 }
 
@@ -263,22 +291,73 @@ void MainWindow::onAlert(AlertEvent alert)
 
 void MainWindow::onPlayClip(AlertEvent alert)
 {
-    if (alert.clip.isEmpty() && m_pipeline.ring()) {
-        alert.clip = m_pipeline.ring()->lastSeconds(5, 12);
+    if (alert.clip.isEmpty()) {
+        if (auto *r = m_pipeline.ring(alert.cameraId)) {
+            alert.clip = r->lastSeconds(5, 12);
+        }
     }
     auto *dlg = new ClipPlayerDialog(alert, this);
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();
 }
 
+bool MainWindow::promptAndSetPersonName(int persistentId, const QString &currentName)
+{
+    if (persistentId <= 0) {
+        return false;
+    }
+    const QString existing = m_pipeline.personName(persistentId);
+    bool ok = false;
+    const QString name = QInputDialog::getText(
+        this, existing.isEmpty() ? QStringLiteral("Kişiye isim ver") : QStringLiteral("İsim değiştir"),
+        QStringLiteral("Kalıcı ID %1 için isim:\n(Bir ID = bir kişi; eski isim üzerine yazılır)")
+            .arg(persistentId, 3, 10, QChar('0')),
+        QLineEdit::Normal, currentName.isEmpty() ? existing : currentName, &ok);
+    if (!ok || name.trimmed().isEmpty()) {
+        return false;
+    }
+    if (!m_pipeline.setPersonName(persistentId, name.trimmed())) {
+        QMessageBox::warning(this, QStringLiteral("İsim"),
+                             QStringLiteral("Bu ID henüz kaydedilmedi. Biraz bekleyip tekrar deneyin."));
+        return false;
+    }
+    m_statusMsg->setText(QStringLiteral("Kaydedildi: %1 → ID %2 (%3) — canlı kutuya bağlandı")
+                             .arg(name.trimmed())
+                             .arg(persistentId, 3, 10, QChar('0'))
+                             .arg(m_pipeline.peopleStorageHint()));
+
+    AlertEvent namedAlert;
+    namedAlert.cameraId = m_cameras ? m_cameras->activeId() : 0;
+    namedAlert.trackId = persistentId;
+    namedAlert.kind = ObjectKind::Human;
+    namedAlert.level = AlertLevel::Suspicious;
+    namedAlert.named = true;
+    namedAlert.personName = name.trimmed();
+    namedAlert.title = existing.isEmpty()
+                           ? QStringLiteral("%1 KAYDEDİLDİ").arg(name.trimmed().toUpper())
+                           : QStringLiteral("%1 (eski: %2)").arg(name.trimmed().toUpper(), existing.toUpper());
+    namedAlert.detail = QStringLiteral("Tek kalıcı ID %1 — ekrandaki kişiye bağlandı")
+                            .arg(persistentId, 3, 10, QChar('0'));
+    namedAlert.timeText = QDateTime::currentDateTime().toString(QStringLiteral("HH:mm:ss"));
+    m_alerts->addAlert(namedAlert);
+    return true;
+}
+
+void MainWindow::onNamePerson(AlertEvent alert)
+{
+    if (alert.kind != ObjectKind::Human) {
+        return;
+    }
+    promptAndSetPersonName(alert.trackId, alert.personName);
+}
+
 void MainWindow::onCameraSelected(int id, const QString &uri)
 {
-    Q_UNUSED(id);
     if (uri.isEmpty()) {
         m_statusMsg->setText(QStringLiteral("Bu kamera slotu boş (BOŞTA)"));
         return;
     }
-    m_pipeline.setCameraUri(uri);
+    m_pipeline.setActiveCamera(id);
     m_statusMsg->setText(QStringLiteral("Kamera: ") + uri);
 }
 

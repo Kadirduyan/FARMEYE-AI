@@ -37,6 +37,7 @@ echo === CMake configure ===
 cmake -B build-ui -G Ninja -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
   -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64 ^
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ^
   -DFARMEYE_BUILD_ENGINE=ON -DFARMEYE_BUILD_UI=ON
 if errorlevel 1 (
   echo [HATA] cmake configure

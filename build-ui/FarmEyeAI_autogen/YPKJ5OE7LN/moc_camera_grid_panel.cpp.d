@@ -1,4 +1,5 @@
 C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/YPKJ5OE7LN/moc_camera_grid_panel.cpp: C:/FarmEye/FARMEYE-AI/src/ui/camera_grid_panel.h \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QHash \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QString \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QVector \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/q17memory.h \
@@ -130,6 +131,7 @@ C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/YPKJ5OE7LN/moc_camera_grid_pane
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qversiontagging.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qxptype_traits.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qyieldcpu.h \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtGui/QImage \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtGui/qaction.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtGui/qbitmap.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtGui/qbrush.h \

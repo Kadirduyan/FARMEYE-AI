@@ -19,13 +19,16 @@ namespace {
 
 int sortRank(const AlertEvent &a)
 {
-    if (a.kind == ObjectKind::OtherAnimal || a.level == AlertLevel::Abnormal) {
-        return 0;
+    if (a.named) {
+        return 0; // isimli kişiler en üstte (mor)
     }
-    if (a.kind == ObjectKind::Human || a.level == AlertLevel::Suspicious) {
+    if (a.kind == ObjectKind::OtherAnimal || a.level == AlertLevel::Abnormal) {
         return 1;
     }
-    return 2;
+    if (a.kind == ObjectKind::Human || a.level == AlertLevel::Suspicious) {
+        return 2;
+    }
+    return 3;
 }
 
 QWidget *makeAlertCard(const AlertEvent &alert, QWidget *parent, AlertListPanel *panel)
@@ -34,7 +37,14 @@ QWidget *makeAlertCard(const AlertEvent &alert, QWidget *parent, AlertListPanel 
     QString bg = QStringLiteral("rgba(24, 42, 34, 230)");
     QString title = alert.title;
 
-    if (alert.kind == ObjectKind::Human || alert.level == AlertLevel::Suspicious) {
+    if (alert.named) {
+        accent = QStringLiteral("#a855f7");
+        bg = QStringLiteral("rgba(42, 22, 58, 240)");
+        if (title.isEmpty()) {
+            title = alert.personName.isEmpty() ? QStringLiteral("İSİMLİ KİŞİ")
+                                              : QStringLiteral("%1").arg(alert.personName.toUpper());
+        }
+    } else if (alert.kind == ObjectKind::Human || alert.level == AlertLevel::Suspicious) {
         accent = QStringLiteral("#f0c14a");
         bg = QStringLiteral("rgba(48, 38, 14, 235)");
         if (title.isEmpty()) {
@@ -61,7 +71,12 @@ QWidget *makeAlertCard(const AlertEvent &alert, QWidget *parent, AlertListPanel 
                             "}")
                             .arg(bg, accent));
 
-    auto *idLab = new QLabel(QStringLiteral("ID: %1").arg(alert.trackId, 3, 10, QChar('0')), card);
+    const QString idText = alert.named && !alert.personName.isEmpty()
+                               ? QStringLiteral("%1 · ID %2")
+                                     .arg(alert.personName)
+                                     .arg(alert.trackId, 3, 10, QChar('0'))
+                               : QStringLiteral("ID: %1").arg(alert.trackId, 3, 10, QChar('0'));
+    auto *idLab = new QLabel(idText, card);
     idLab->setStyleSheet(QStringLiteral("color:%1; font-weight:800; font-size:13px;").arg(accent));
     auto *timeLab = new QLabel(alert.timeText, card);
     timeLab->setStyleSheet(QStringLiteral("color:#9fb0c3; font-size:11px; font-weight:600;"));
@@ -104,6 +119,28 @@ QWidget *makeAlertCard(const AlertEvent &alert, QWidget *parent, AlertListPanel 
     lay->addWidget(detailLab);
     lay->addLayout(bot);
 
+    if (alert.kind == ObjectKind::Human) {
+        auto *nameBtn = new QPushButton(
+            alert.named ? QStringLiteral("İsim değiştir") : QStringLiteral("İsim ver"), card);
+        nameBtn->setObjectName(QStringLiteral("btnName"));
+        nameBtn->setCursor(Qt::PointingHandCursor);
+        nameBtn->setStyleSheet(QStringLiteral(
+            "QPushButton#btnName {"
+            "  background: rgba(168,85,247,40);"
+            "  color: #e9d5ff;"
+            "  border: 1px solid #a855f7;"
+            "  border-radius: 8px;"
+            "  padding: 4px 10px;"
+            "  font-weight: 700;"
+            "  font-size: 11px;"
+            "}"
+            "QPushButton#btnName:hover { background: rgba(168,85,247,70); }"));
+        lay->addWidget(nameBtn);
+        const AlertEvent copyName = alert;
+        QObject::connect(nameBtn, &QPushButton::clicked, panel,
+                         [panel, copyName]() { panel->requestName(copyName); });
+    }
+
     const AlertEvent copy = alert;
     QObject::connect(play, &QPushButton::clicked, panel, [panel, copy]() { panel->requestPlay(copy); });
     return card;
@@ -127,6 +164,8 @@ AlertListPanel::AlertListPanel(QWidget *parent)
 
     auto *legendRow = new QHBoxLayout;
     legendRow->setSpacing(6);
+    legendRow->addWidget(legend(QStringLiteral("● İSİMLİ"), QStringLiteral("rgba(55,25,70,220)"),
+                                QStringLiteral("#e9d5ff"), this));
     legendRow->addWidget(legend(QStringLiteral("● BAŞKA CANLI"), QStringLiteral("rgba(80,25,30,220)"),
                                 QStringLiteral("#ffb0b0"), this));
     legendRow->addWidget(legend(QStringLiteral("● İNSAN"), QStringLiteral("rgba(70,55,15,220)"),
@@ -144,7 +183,7 @@ AlertListPanel::AlertListPanel(QWidget *parent)
 
     m_empty = new QLabel(
         QStringLiteral("Henüz uyarı yok.\n\nBAŞLAT’a basın — tespitler burada listelenir.\n"
-                       "Kırmızı en üstte, sonra sarı, sonra yeşil."),
+                       "İnsan kartında «İsim ver» ile kalıcı etiket atayın."),
         this);
     m_empty->setObjectName(QStringLiteral("emptyHint"));
     m_empty->setAlignment(Qt::AlignCenter);
@@ -201,7 +240,7 @@ void AlertListPanel::rebuildList()
         auto *card = makeAlertCard(sorted[i], m_list, this);
         m_list->addItem(item);
         m_list->setItemWidget(item, card);
-        item->setSizeHint(QSize(0, qMax(98, card->sizeHint().height() + 8)));
+        item->setSizeHint(QSize(0, qMax(118, card->sizeHint().height() + 8)));
         int src = 0;
         for (int j = 0; j < m_events.size(); ++j) {
             if (m_events[j].trackId == sorted[i].trackId && m_events[j].timeText == sorted[i].timeText

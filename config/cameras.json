@@ -3,8 +3,6 @@
     { "id": 0, "name": "Camera 1", "uri": "webcam:0", "enabled": true },
     { "id": 1, "name": "Camera 2", "uri": "", "enabled": false },
     { "id": 2, "name": "Camera 3", "uri": "", "enabled": false },
-    { "id": 3, "name": "Camera 4", "uri": "", "enabled": false },
-    { "id": 4, "name": "Camera 5", "uri": "", "enabled": false },
-    { "id": 5, "name": "Camera 6", "uri": "", "enabled": false }
+    { "id": 3, "name": "Camera 4", "uri": "", "enabled": false }
   ]
 }

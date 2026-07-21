@@ -48,6 +48,7 @@ template <> constexpr inline auto farmeye::MainWindow::qt_create_metaobjectdata<
         "farmeye::AlertEvent",
         "alert",
         "onPlayClip",
+        "onNamePerson",
         "onCameraSelected",
         "id",
         "uri",
@@ -73,16 +74,20 @@ template <> constexpr inline auto farmeye::MainWindow::qt_create_metaobjectdata<
         QtMocHelpers::SlotData<void(farmeye::AlertEvent)>(9, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 7, 8 },
         }}),
+        // Slot 'onNamePerson'
+        QtMocHelpers::SlotData<void(farmeye::AlertEvent)>(10, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 7, 8 },
+        }}),
         // Slot 'onCameraSelected'
-        QtMocHelpers::SlotData<void(int, const QString &)>(10, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 11 }, { QMetaType::QString, 12 },
+        QtMocHelpers::SlotData<void(int, const QString &)>(11, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 12 }, { QMetaType::QString, 13 },
         }}),
         // Slot 'onResolutionChanged'
-        QtMocHelpers::SlotData<void(int)>(13, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 14 },
+        QtMocHelpers::SlotData<void(int)>(14, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 15 },
         }}),
         // Slot 'onPcPreset'
-        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -111,9 +116,10 @@ void farmeye::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 2: _t->onRunningChanged((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
         case 3: _t->onAlert((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
         case 4: _t->onPlayClip((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
-        case 5: _t->onCameraSelected((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
-        case 6: _t->onResolutionChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 7: _t->onPcPreset(); break;
+        case 5: _t->onNamePerson((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
+        case 6: _t->onCameraSelected((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 7: _t->onResolutionChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 8: _t->onPcPreset(); break;
         default: ;
         }
     }
@@ -128,6 +134,13 @@ void farmeye::MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
             }
             break;
         case 4:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< farmeye::AlertEvent >(); break;
+            }
+            break;
+        case 5:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
@@ -157,14 +170,14 @@ int farmeye::MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }

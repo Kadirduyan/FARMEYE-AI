@@ -56,7 +56,8 @@ bool InferenceEngine::loadEngine(const std::string &modelPath)
         m_net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
         m_net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
         m_loaded = true;
-        std::cout << "[InferenceEngine] Yuklendi: " << onnx << "\n";
+        std::cout << "[InferenceEngine] Yuklendi (CPU): " << onnx
+                  << " input=" << m_inputSize << "\n";
         return true;
     } catch (const cv::Exception &ex) {
         std::cerr << "[InferenceEngine] ONNX load hatasi: " << ex.what() << "\n";
@@ -89,75 +90,83 @@ bool InferenceEngine::infer(const cv::Mat &letterboxedBgr, std::vector<Detection
         return false;
     }
 
-    // blob: 1x3x640x640, RGB, /255
-    cv::Mat blob;
-    cv::dnn::blobFromImage(letterboxedBgr, blob, 1.0 / 255.0, cv::Size(m_inputSize, m_inputSize),
-                           cv::Scalar(), true, false);
-    m_net.setInput(blob);
+    try {
+        cv::Mat blob;
+        cv::dnn::blobFromImage(letterboxedBgr, blob, 1.0 / 255.0, cv::Size(m_inputSize, m_inputSize),
+                               cv::Scalar(), true, false);
+        m_net.setInput(blob);
 
-    std::vector<cv::Mat> outputs;
-    m_net.forward(outputs, m_net.getUnconnectedOutLayersNames());
-    if (outputs.empty()) {
-        return false;
-    }
+        std::vector<cv::Mat> outputs;
+        m_net.forward(outputs, m_net.getUnconnectedOutLayersNames());
+        if (outputs.empty()) {
+            return false;
+        }
 
-    // Ultralytics YOLOv8 ONNX: [1, 84, 8400] → rows=84 (4+80), cols=8400
-    cv::Mat pred = outputs[0];
-    if (pred.dims == 3) {
-        pred = pred.reshape(1, pred.size[1]); // 84 x 8400
-    }
+        cv::Mat pred = outputs[0];
+        if (pred.dims == 3) {
+            pred = pred.reshape(1, pred.size[1]);
+        }
 
-    const int rows = pred.rows; // 84
-    const int cols = pred.cols; // 8400
-    if (rows < 5 || cols < 1) {
-        return false;
-    }
+        const int rows = pred.rows;
+        const int cols = pred.cols;
+        if (rows < 5 || cols < 1) {
+            return false;
+        }
 
-    const int numClasses = rows - 4;
-    std::vector<int> classIds;
-    std::vector<float> confidences;
-    std::vector<cv::Rect> boxes;
+        const int numClasses = rows - 4;
+        std::vector<int> classIds;
+        std::vector<float> confidences;
+        std::vector<cv::Rect> boxes;
 
-    for (int i = 0; i < cols; ++i) {
-        float bestScore = 0.f;
-        int bestCls = -1;
-        for (int c = 0; c < numClasses; ++c) {
-            const float s = pred.at<float>(4 + c, i);
-            if (s > bestScore) {
-                bestScore = s;
-                bestCls = c;
+        for (int i = 0; i < cols; ++i) {
+            float bestScore = 0.f;
+            int bestCls = -1;
+            for (int c = 0; c < numClasses; ++c) {
+                const float s = pred.at<float>(4 + c, i);
+                if (s > bestScore) {
+                    bestScore = s;
+                    bestCls = c;
+                }
             }
+            if (bestScore < confThresh) {
+                continue;
+            }
+
+            const float cx = pred.at<float>(0, i);
+            const float cy = pred.at<float>(1, i);
+            const float w = pred.at<float>(2, i);
+            const float h = pred.at<float>(3, i);
+            const int left = static_cast<int>(cx - w * 0.5f);
+            const int top = static_cast<int>(cy - h * 0.5f);
+            boxes.emplace_back(left, top, static_cast<int>(w), static_cast<int>(h));
+            confidences.push_back(bestScore);
+            classIds.push_back(bestCls);
         }
-        if (bestScore < confThresh) {
-            continue;
+
+        std::vector<int> indices;
+        cv::dnn::NMSBoxes(boxes, confidences, confThresh, nmsThresh, indices);
+
+        out.reserve(indices.size());
+        for (int idx : indices) {
+            Detection d;
+            d.x1 = static_cast<float>(boxes[idx].x);
+            d.y1 = static_cast<float>(boxes[idx].y);
+            d.x2 = static_cast<float>(boxes[idx].x + boxes[idx].width);
+            d.y2 = static_cast<float>(boxes[idx].y + boxes[idx].height);
+            d.score = confidences[idx];
+            d.classId = classIds[idx];
+            out.push_back(d);
         }
-
-        const float cx = pred.at<float>(0, i);
-        const float cy = pred.at<float>(1, i);
-        const float w = pred.at<float>(2, i);
-        const float h = pred.at<float>(3, i);
-        const int left = static_cast<int>(cx - w * 0.5f);
-        const int top = static_cast<int>(cy - h * 0.5f);
-        boxes.emplace_back(left, top, static_cast<int>(w), static_cast<int>(h));
-        confidences.push_back(bestScore);
-        classIds.push_back(bestCls);
+        return true;
+    } catch (const cv::Exception &ex) {
+        std::cerr << "[InferenceEngine] infer hatasi (yutuldu): " << ex.what() << "\n";
+        out.clear();
+        return false;
+    } catch (...) {
+        std::cerr << "[InferenceEngine] infer bilinmeyen hata\n";
+        out.clear();
+        return false;
     }
-
-    std::vector<int> indices;
-    cv::dnn::NMSBoxes(boxes, confidences, confThresh, nmsThresh, indices);
-
-    out.reserve(indices.size());
-    for (int idx : indices) {
-        Detection d;
-        d.x1 = static_cast<float>(boxes[idx].x);
-        d.y1 = static_cast<float>(boxes[idx].y);
-        d.x2 = static_cast<float>(boxes[idx].x + boxes[idx].width);
-        d.y2 = static_cast<float>(boxes[idx].y + boxes[idx].height);
-        d.score = confidences[idx];
-        d.classId = classIds[idx];
-        out.push_back(d);
-    }
-    return true;
 }
 
 } // namespace farmeye

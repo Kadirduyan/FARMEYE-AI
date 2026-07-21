@@ -30,7 +30,7 @@ bool looksLikeFile(const std::string &uri)
         return true;
     }
     if (uri.size() >= 2 && uri[1] == ':') {
-        return true; // C:\...
+        return true;
     }
     return false;
 }
@@ -61,73 +61,74 @@ int parseDeviceIndex(const std::string &uri, const char *prefix)
     return 0;
 }
 
-std::string buildPipeline(const std::string &uri)
+// Güvenilir kuyruk: ölçek + BGR + drop (videorate yok — webcam'lerde kareyi kesebiliyor)
+std::string appsinkTail(int maxW, int maxH)
 {
-    // Webcam / USB (Windows Media Foundation)
-    if (uri == "webcam" || startsWith(uri, "webcam:") || uri == "usb" || startsWith(uri, "usb:")) {
-        const int idx = parseDeviceIndex(uri, startsWith(uri, "usb") ? "usb" : "webcam");
-        return "mfvideosrc device-index=" + std::to_string(idx) +
-               " ! videoconvert ! video/x-raw,format=BGR ! "
-               "appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false";
+    if (maxW < 160) {
+        maxW = 160;
     }
-
-    // RTSP (Windows HW decode)
-    if (startsWith(uri, "rtsp://")) {
-        return "rtspsrc location=" + uri + " latency=100 ! "
-               "rtph264depay ! h264parse ! d3d11h264dec ! d3d11download ! "
-               "videoconvert ! video/x-raw,format=BGR ! "
-               "appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false";
+    if (maxH < 120) {
+        maxH = 120;
     }
+    return "videoconvert ! videoscale method=0 ! "
+           "video/x-raw,format=BGR,width=" +
+           std::to_string(maxW) + ",height=" + std::to_string(maxH) +
+           " ! appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false";
+}
 
-    // Yerel video dosyası
-    if (looksLikeFile(uri)) {
-        const std::string path = normalizeFilePath(uri);
-        return "filesrc location=\"" + path + "\" ! decodebin ! videoconvert ! "
-               "video/x-raw,format=BGR ! appsink name=sink emit-signals=false "
-               "max-buffers=1 drop=true sync=false";
-    }
-
-    // Varsayılan: RTSP gibi dene
-    return "rtspsrc location=" + uri + " latency=100 ! "
-           "rtph264depay ! h264parse ! decodebin ! videoconvert ! "
-           "video/x-raw,format=BGR ! "
+// En basit: sadece BGR appsink (ölçek yok) — son çare
+std::string appsinkTailSimple()
+{
+    return "videoconvert ! video/x-raw,format=BGR ! "
            "appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false";
 }
 
-#endif
-
-} // namespace
-
-GstCameraCapture::~GstCameraCapture()
+std::string buildWebcamPipeline(int idx, int maxW, int maxH, int variant)
 {
-    close();
+    // variant 0: ölçekli (tercih)
+    // variant 1: ölçeksiz basit
+    if (variant == 0) {
+        return "mfvideosrc device-index=" + std::to_string(idx) + " ! " + appsinkTail(maxW, maxH);
+    }
+    return "mfvideosrc device-index=" + std::to_string(idx) + " ! " + appsinkTailSimple();
 }
 
-bool GstCameraCapture::open(const std::string &uri)
+std::string buildPipeline(const std::string &uri, int maxW, int maxH, int variant)
 {
-    close();
-    m_uri = uri;
-    if (uri.empty()) {
-        return false;
+    if (uri == "webcam" || startsWith(uri, "webcam:") || uri == "usb" || startsWith(uri, "usb:")) {
+        const int idx = parseDeviceIndex(uri, startsWith(uri, "usb") ? "usb" : "webcam");
+        return buildWebcamPipeline(idx, maxW, maxH, variant);
     }
 
-#if !defined(HAVE_GSTREAMER)
-    std::cerr << "[GstCameraCapture] GStreamer bagli degil (HAVE_GSTREAMER yok).\n";
-    return false;
-#else
-    static bool gstInited = false;
-    if (!gstInited) {
-        gst_init(nullptr, nullptr);
-        gstInited = true;
+    const std::string sink = (variant == 0) ? appsinkTail(maxW, maxH) : appsinkTailSimple();
+
+    if (startsWith(uri, "rtsp://")) {
+        if (variant == 0) {
+            return "rtspsrc location=" + uri + " latency=120 drop-on-latency=true ! "
+                   "rtph264depay ! h264parse ! d3d11h264dec ! d3d11download ! " +
+                   sink;
+        }
+        return "rtspsrc location=" + uri + " latency=120 drop-on-latency=true ! "
+               "rtph264depay ! h264parse ! decodebin ! " + sink;
     }
 
-    const std::string pipelineStr = buildPipeline(uri);
-    std::cout << "[GstCameraCapture] pipeline: " << pipelineStr << "\n";
+    if (looksLikeFile(uri)) {
+        const std::string path = normalizeFilePath(uri);
+        return "filesrc location=\"" + path + "\" ! decodebin ! " + sink;
+    }
+
+    return "rtspsrc location=" + uri + " latency=120 drop-on-latency=true ! "
+           "decodebin ! " + sink;
+}
+
+bool tryStartAndVerify(const std::string &pipelineStr, GstElement **outPipe, GstElement **outSink)
+{
+    std::cout << "[GstCameraCapture] try: " << pipelineStr << "\n";
 
     GError *error = nullptr;
     GstElement *pipeline = gst_parse_launch(pipelineStr.c_str(), &error);
     if (!pipeline) {
-        std::cerr << "[GstCameraCapture] pipeline hatasi: "
+        std::cerr << "[GstCameraCapture] parse hatasi: "
                   << (error ? error->message : "bilinmiyor") << "\n";
         if (error) {
             g_error_free(error);
@@ -140,23 +141,89 @@ bool GstCameraCapture::open(const std::string &uri)
 
     GstElement *sink = gst_bin_get_by_name(GST_BIN(pipeline), "sink");
     if (!sink) {
-        std::cerr << "[GstCameraCapture] appsink bulunamadi\n";
+        std::cerr << "[GstCameraCapture] appsink yok\n";
         gst_object_unref(pipeline);
         return false;
     }
 
     const GstStateChangeReturn ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE) {
-        std::cerr << "[GstCameraCapture] PLAYING basarisiz\n";
+        std::cerr << "[GstCameraCapture] PLAYING failure\n";
         gst_object_unref(sink);
         gst_object_unref(pipeline);
         return false;
     }
 
-    m_pipeline = pipeline;
-    m_appsink = sink;
-    m_open = true;
+    // ASYNC tamamlanmasını bekle
+    gst_element_get_state(pipeline, nullptr, nullptr, 2 * GST_SECOND);
+
+    // İlk kare gelmezse pipeline işe yaramıyor say
+    GstSample *sample =
+        gst_app_sink_try_pull_sample(GST_APP_SINK(sink), 2500 * GST_MSECOND);
+    if (!sample) {
+        std::cerr << "[GstCameraCapture] ilk kare gelmedi — pipeline elendi\n";
+        gst_element_set_state(pipeline, GST_STATE_NULL);
+        gst_object_unref(sink);
+        gst_object_unref(pipeline);
+        return false;
+    }
+    gst_sample_unref(sample);
+
+    *outPipe = pipeline;
+    *outSink = sink;
     return true;
+}
+
+#endif
+
+} // namespace
+
+GstCameraCapture::~GstCameraCapture()
+{
+    close();
+}
+
+bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH)
+{
+    return open(uri, maxW, maxH, 12);
+}
+
+bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH, int /*fps*/)
+{
+    close();
+    m_uri = uri;
+    if (uri.empty()) {
+        return false;
+    }
+
+#if !defined(HAVE_GSTREAMER)
+    (void)maxW;
+    (void)maxH;
+    std::cerr << "[GstCameraCapture] GStreamer bagli degil (HAVE_GSTREAMER yok).\n";
+    return false;
+#else
+    static bool gstInited = false;
+    if (!gstInited) {
+        gst_init(nullptr, nullptr);
+        gstInited = true;
+    }
+
+    GstElement *pipeline = nullptr;
+    GstElement *sink = nullptr;
+
+    // 0: ölçekli, 1: basit — ilk kare doğrulamalı
+    for (int variant = 0; variant < 2; ++variant) {
+        const std::string pipe = buildPipeline(uri, maxW, maxH, variant);
+        if (tryStartAndVerify(pipe, &pipeline, &sink)) {
+            m_pipeline = pipeline;
+            m_appsink = sink;
+            m_open = true;
+            std::cout << "[GstCameraCapture] OK variant=" << variant << "\n";
+            return true;
+        }
+    }
+
+    return false;
 #endif
 }
 
@@ -187,7 +254,7 @@ bool GstCameraCapture::read(FrameBuffer &out)
     }
 
     GstSample *sample =
-        gst_app_sink_try_pull_sample(GST_APP_SINK(m_appsink), 1000 * GST_MSECOND);
+        gst_app_sink_try_pull_sample(GST_APP_SINK(m_appsink), 100 * GST_MSECOND);
     if (!sample) {
         return false;
     }

@@ -192,3 +192,54 @@ ADIМ 18 — OneDrive carpi + klasor duzeni
 - .gitignore guncellendi (build + datasets)
 
 
+ADIМ 19 — 4 kamera altyapısı (çoklu capture)
+-------------------------------------------
+Tarih: 20 Temmuz 2026
+
+Yapılanlar:
+- config/cameras.json → 6 slot kaldırıldı, 4 kamera slotu
+- CameraGridPanel → 4 tile + setThumbFrame (canlı thumbnail)
+- FrameRingBuffer → BGR latest + seyrek clip (tryLatestBgr / tryLatestQImage)
+- PipelineController:
+  * Her kamera: CaptureWorker (GStreamer 640x360@12, videorate)
+  * UI: QTimer poll (~15fps aktif / ~4fps diğer) — sinyal flood yok
+  * Inference: sadece aktif kamera, 5 fps, YOLO 416, OpenCL dene
+- Busy-spin / her-kare RGB kopyası / her-eş disk save kaldırıldı
+
+
+SONRAKI ADIM
+------------
+1) 2. kamera (USB) cameras.json'a ekleyip çift akış test
+2) RTSP gerçek IP kamera test
+3) Alarm anında diske klip kaydı
+4) TensorRT C++ ile GPU inference (CPU'yu daha da düşürür)
+
+ADIM 20 - Kalici insan kimligi (SQLite)
+---------------------------------------
+Tarih: 20 Temmuz 2026
+
+Yapilanlar:
+- PersonIdentityStore: tracker session ID yerine kalici ID (C:/FarmEyeData/people.db)
+- Qt6::Sql + QSQLITE; tablo people (id, name, locked, hist_b64, updated_at)
+- HSV hist (48 dim) ile eslesme; isim verilince kilit; eski JSON migrate
+- CMake: find_package Qt6 Sql; link Qt6::Sql
+- Build (vcvars64 + Ninja Release): FarmEyeAI.exe OK, Qt6Sql.dll deploy
+
+Build notu (20 Temmuz 2026):
+- vcvars: VS 18 Community vcvars64.bat
+- cmake configure + build-ui Release: BASARILI (compiler error yok)
+- Qt6Sql_DIR = vcpkg x64-windows; QT_FEATURE_sql=ON
+
+
+ADIM - Repo temizligi (Temmuz 2026)
+------------------------------------
+Tarih: 20 Temmuz 2026
+
+Yapilanlar (temizlik):
+- Silindi: src/backend, src/camera, src/core, src/models (stub), src/resources (stub)
+- Silindi: build/, build-mingw/, build-engine/ (stale; build-ui korundu)
+- Silindi: CMakeLists.engine.txt, tools/ (make_farmeeye_presentation.py), third_party/, datasets/
+- Silindi: kok compile_commands.json
+- OneDrive duzeltmesi: README.md ve .gitignore dizin degildi; gercek dosya olarak yeniden olusturuldu
+- Korunanlar: build-ui, src/app|engine|ui|tracking|main.cpp, models/, config/, resources/, CMakeLists.txt, build_ui.bat, YAPILANLAR.txt, PROJE_YAPISI.txt, .vscode, engine build scriptleri
+

@@ -7,14 +7,14 @@ C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/include/pipeline_controller.moc
   C:/FarmEye/FARMEYE-AI/src/engine/class_policy.h \
   C:/FarmEye/FARMEYE-AI/src/engine/preprocess.h \
   C:/FarmEye/FARMEYE-AI/src/tracking/tracker.h \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QCoreApplication \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QDateTime \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QEventLoop \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QElapsedTimer \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QMetaType \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QMutex \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QObject \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QString \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QThread \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QTimer \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/QVector \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/q17memory.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/q20bit.h \
@@ -55,14 +55,12 @@ C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/include/pipeline_controller.moc
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontainerinfo.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontainertools_impl.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcontiguouscache.h \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreapplication.h \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreapplication_platform.h \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qcoreevent.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdarwinhelpers.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdatastream.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdatetime.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdeadlinetimer.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qdebug.h \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qelapsedtimer.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qeventloop.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qexceptionhandling.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qflags.h \
@@ -92,7 +90,6 @@ C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/include/pipeline_controller.moc
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qminmax.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qmutex.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnamespace.h \
-  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnativeinterface.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qnumeric.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qobject.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qobject_impl.h \
@@ -140,6 +137,7 @@ C:/FarmEye/FARMEYE-AI/build-ui/FarmEyeAI_autogen/include/pipeline_controller.moc
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtextstream.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtformat_impl.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qthread.h \
+  C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtimer.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtmetamacros.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtnoop.h \
   C:/vcpkg/installed/x64-windows/include/Qt6/QtCore/qtpreprocessorsupport.h \

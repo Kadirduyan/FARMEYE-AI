@@ -31,14 +31,132 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 QT_WARNING_DISABLE_GCC("-Wuseless-cast")
 namespace {
-struct qt_meta_tag_ZN7farmeye14PipelineWorkerE_t {};
+struct qt_meta_tag_ZN7farmeye13CaptureWorkerE_t {};
 } // unnamed namespace
 
-template <> constexpr inline auto farmeye::PipelineWorker::qt_create_metaobjectdata<qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>()
+template <> constexpr inline auto farmeye::CaptureWorker::qt_create_metaobjectdata<qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>()
 {
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
-        "farmeye::PipelineWorker",
+        "farmeye::CaptureWorker",
+        "statusMessage",
+        "",
+        "msg",
+        "failed",
+        "reason",
+        "setUri",
+        "uri",
+        "startLoop",
+        "stopLoop"
+    };
+
+    QtMocHelpers::UintData qt_methods {
+        // Signal 'statusMessage'
+        QtMocHelpers::SignalData<void(const QString &)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 3 },
+        }}),
+        // Signal 'failed'
+        QtMocHelpers::SignalData<void(const QString &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
+        }}),
+        // Slot 'setUri'
+        QtMocHelpers::SlotData<void(const QString &)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 7 },
+        }}),
+        // Slot 'startLoop'
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'stopLoop'
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPublic, QMetaType::Void),
+    };
+    QtMocHelpers::UintData qt_properties {
+    };
+    QtMocHelpers::UintData qt_enums {
+    };
+    return QtMocHelpers::metaObjectData<CaptureWorker, qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+            qt_methods, qt_properties, qt_enums);
+}
+Q_CONSTINIT const QMetaObject farmeye::CaptureWorker::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>.data,
+    qt_static_metacall,
+    nullptr,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>.metaTypes,
+    nullptr
+} };
+
+void farmeye::CaptureWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    auto *_t = static_cast<CaptureWorker *>(_o);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: _t->statusMessage((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 1: _t->failed((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 2: _t->setUri((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 3: _t->startLoop(); break;
+        case 4: _t->stopLoop(); break;
+        default: ;
+        }
+    }
+    if (_c == QMetaObject::IndexOfMethod) {
+        if (QtMocHelpers::indexOfMethod<void (CaptureWorker::*)(const QString & )>(_a, &CaptureWorker::statusMessage, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (CaptureWorker::*)(const QString & )>(_a, &CaptureWorker::failed, 1))
+            return;
+    }
+}
+
+const QMetaObject *farmeye::CaptureWorker::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *farmeye::CaptureWorker::qt_metacast(const char *_clname)
+{
+    if (!_clname) return nullptr;
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye13CaptureWorkerE_t>.strings))
+        return static_cast<void*>(this);
+    return QObject::qt_metacast(_clname);
+}
+
+int farmeye::CaptureWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 5)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 5;
+    }
+    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 5)
+            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
+        _id -= 5;
+    }
+    return _id;
+}
+
+// SIGNAL 0
+void farmeye::CaptureWorker::statusMessage(const QString & _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1);
+}
+
+// SIGNAL 1
+void farmeye::CaptureWorker::failed(const QString & _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
+}
+namespace {
+struct qt_meta_tag_ZN7farmeye15InferenceWorkerE_t {};
+} // unnamed namespace
+
+template <> constexpr inline auto farmeye::InferenceWorker::qt_create_metaobjectdata<qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>()
+{
+    namespace QMC = QtMocConstants;
+    QtMocHelpers::StringRefStorage qt_stringData {
+        "farmeye::InferenceWorker",
         "frameReady",
         "",
         "QImage",
@@ -52,8 +170,6 @@ template <> constexpr inline auto farmeye::PipelineWorker::qt_create_metaobjectd
         "msg",
         "failed",
         "reason",
-        "setUri",
-        "uri",
         "setModelPath",
         "path",
         "startLoop",
@@ -77,49 +193,44 @@ template <> constexpr inline auto farmeye::PipelineWorker::qt_create_metaobjectd
         QtMocHelpers::SignalData<void(const QString &)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QString, 13 },
         }}),
-        // Slot 'setUri'
+        // Slot 'setModelPath'
         QtMocHelpers::SlotData<void(const QString &)>(14, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QString, 15 },
         }}),
-        // Slot 'setModelPath'
-        QtMocHelpers::SlotData<void(const QString &)>(16, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 17 },
-        }}),
         // Slot 'startLoop'
-        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'stopLoop'
-        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
     QtMocHelpers::UintData qt_enums {
     };
-    return QtMocHelpers::metaObjectData<PipelineWorker, qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+    return QtMocHelpers::metaObjectData<InferenceWorker, qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>(QMC::MetaObjectFlag{}, qt_stringData,
             qt_methods, qt_properties, qt_enums);
 }
-Q_CONSTINIT const QMetaObject farmeye::PipelineWorker::staticMetaObject = { {
+Q_CONSTINIT const QMetaObject farmeye::InferenceWorker::staticMetaObject = { {
     QMetaObject::SuperData::link<QObject::staticMetaObject>(),
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>.stringdata,
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>.data,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>.data,
     qt_static_metacall,
     nullptr,
-    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>.metaTypes,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>.metaTypes,
     nullptr
 } };
 
-void farmeye::PipelineWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void farmeye::InferenceWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    auto *_t = static_cast<PipelineWorker *>(_o);
+    auto *_t = static_cast<InferenceWorker *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->frameReady((*reinterpret_cast<std::add_pointer_t<QImage>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QList<farmeye::TrackOverlay>>>(_a[2]))); break;
         case 1: _t->alertRaised((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
         case 2: _t->statusMessage((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->failed((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 4: _t->setUri((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 5: _t->setModelPath((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 6: _t->startLoop(); break;
-        case 7: _t->stopLoop(); break;
+        case 4: _t->setModelPath((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 5: _t->startLoop(); break;
+        case 6: _t->stopLoop(); break;
         default: ;
         }
     }
@@ -143,68 +254,68 @@ void farmeye::PipelineWorker::qt_static_metacall(QObject *_o, QMetaObject::Call 
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
-        if (QtMocHelpers::indexOfMethod<void (PipelineWorker::*)(const QImage & , const QVector<farmeye::TrackOverlay> & )>(_a, &PipelineWorker::frameReady, 0))
+        if (QtMocHelpers::indexOfMethod<void (InferenceWorker::*)(const QImage & , const QVector<farmeye::TrackOverlay> & )>(_a, &InferenceWorker::frameReady, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (PipelineWorker::*)(farmeye::AlertEvent )>(_a, &PipelineWorker::alertRaised, 1))
+        if (QtMocHelpers::indexOfMethod<void (InferenceWorker::*)(farmeye::AlertEvent )>(_a, &InferenceWorker::alertRaised, 1))
             return;
-        if (QtMocHelpers::indexOfMethod<void (PipelineWorker::*)(const QString & )>(_a, &PipelineWorker::statusMessage, 2))
+        if (QtMocHelpers::indexOfMethod<void (InferenceWorker::*)(const QString & )>(_a, &InferenceWorker::statusMessage, 2))
             return;
-        if (QtMocHelpers::indexOfMethod<void (PipelineWorker::*)(const QString & )>(_a, &PipelineWorker::failed, 3))
+        if (QtMocHelpers::indexOfMethod<void (InferenceWorker::*)(const QString & )>(_a, &InferenceWorker::failed, 3))
             return;
     }
 }
 
-const QMetaObject *farmeye::PipelineWorker::metaObject() const
+const QMetaObject *farmeye::InferenceWorker::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *farmeye::PipelineWorker::qt_metacast(const char *_clname)
+void *farmeye::InferenceWorker::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye14PipelineWorkerE_t>.strings))
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7farmeye15InferenceWorkerE_t>.strings))
         return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
-int farmeye::PipelineWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int farmeye::InferenceWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 7;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 7;
     }
     return _id;
 }
 
 // SIGNAL 0
-void farmeye::PipelineWorker::frameReady(const QImage & _t1, const QVector<farmeye::TrackOverlay> & _t2)
+void farmeye::InferenceWorker::frameReady(const QImage & _t1, const QVector<farmeye::TrackOverlay> & _t2)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1, _t2);
 }
 
 // SIGNAL 1
-void farmeye::PipelineWorker::alertRaised(farmeye::AlertEvent _t1)
+void farmeye::InferenceWorker::alertRaised(farmeye::AlertEvent _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 
 // SIGNAL 2
-void farmeye::PipelineWorker::statusMessage(const QString & _t1)
+void farmeye::InferenceWorker::statusMessage(const QString & _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
 }
 
 // SIGNAL 3
-void farmeye::PipelineWorker::failed(const QString & _t1)
+void farmeye::InferenceWorker::failed(const QString & _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
 }

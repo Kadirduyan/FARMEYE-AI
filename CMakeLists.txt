@@ -42,7 +42,7 @@ if(FARMEYE_BUILD_UI)
     set(CMAKE_AUTORCC ON)
     set(CMAKE_AUTOUIC ON)
 
-    find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL OpenGLWidgets Gui)
+    find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL OpenGLWidgets Gui Sql)
 
     add_executable(FarmEyeAI
         src/main.cpp
@@ -81,6 +81,7 @@ if(FARMEYE_BUILD_UI)
         Qt6::OpenGL
         Qt6::OpenGLWidgets
         Qt6::Gui
+        Qt6::Sql
         ${OpenCV_LIBS}
     )
     if(WIN32)

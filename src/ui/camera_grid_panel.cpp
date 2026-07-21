@@ -5,7 +5,9 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPixmap>
 #include <QVBoxLayout>
+#include <QSizePolicy>
 
 namespace farmeye {
 
@@ -29,11 +31,14 @@ CameraGridPanel::CameraGridPanel(QWidget *parent)
 void CameraGridPanel::setCameras(const QVector<CameraSlot> &cams)
 {
     m_cams = cams;
-    while (m_cams.size() < 6) {
+    while (m_cams.size() < 4) {
         CameraSlot s;
         s.id = m_cams.size();
         s.name = QStringLiteral("Camera %1").arg(s.id + 1);
         m_cams.push_back(s);
+    }
+    if (m_cams.size() > 4) {
+        m_cams.resize(4);
     }
     if (m_activeId < 0 || m_activeId >= m_cams.size()) {
         m_activeId = 0;
@@ -48,8 +53,9 @@ void CameraGridPanel::rebuild()
         delete child->widget();
         delete child;
     }
+    m_thumbLabels.clear();
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 4; ++i) {
         const CameraSlot &c = m_cams[i];
         QString status = QStringLiteral("BOŞTA");
         QString accent = QStringLiteral("#4d5d70");
@@ -86,15 +92,13 @@ void CameraGridPanel::rebuild()
             "stop:0 #2a2838, stop:0.5 #181828, stop:1 #101018",
             "stop:0 #203428, stop:0.5 #14241c, stop:1 #0c1812",
             "stop:0 #283040, stop:0.5 #182028, stop:1 #101820",
-            "stop:0 #302828, stop:0.5 #201818, stop:1 #140e0e",
-            "stop:0 #223038, stop:0.5 #142028, stop:1 #0c161c",
         };
         thumb->setStyleSheet(QStringLiteral(
                                  "QFrame {"
                                  "  background: qlineargradient(x1:0,y1:0,x2:0.35,y2:1, %1);"
                                  "  border: none; border-radius: 10px;"
                                  "}")
-                                 .arg(QLatin1String(grads[i % 6])));
+                                 .arg(QLatin1String(grads[i % 4])));
 
         auto *overlay = new QLabel(QStringLiteral("CAM %1").arg(i + 1), thumb);
         overlay->setAlignment(Qt::AlignCenter);
@@ -104,6 +108,18 @@ void CameraGridPanel::rebuild()
         thumbLay->addStretch();
         thumbLay->addWidget(overlay);
         thumbLay->addStretch();
+
+        auto *thumbImg = new QLabel(thumb);
+        thumbImg->setObjectName(QStringLiteral("thumbImg_%1").arg(c.id));
+        thumbImg->setAlignment(Qt::AlignCenter);
+        thumbImg->setStyleSheet(QStringLiteral("background: transparent; color: rgba(220,235,250,60);"));
+        thumbImg->setText(QStringLiteral("Görüntü"));
+        thumbImg->setMinimumHeight(52);
+        thumbImg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        thumbLay->insertWidget(1, thumbImg);
+        overlay->raise();
+
+        m_thumbLabels.insert(c.id, thumbImg);
 
         auto *nameLab = new QLabel(c.name.isEmpty() ? QStringLiteral("Camera %1").arg(i + 1) : c.name, tile);
         nameLab->setStyleSheet(QStringLiteral("color:#e8eef5; font-size:12px; font-weight:700; background:transparent; border:none;"));
@@ -126,6 +142,30 @@ void CameraGridPanel::rebuild()
         inner->addLayout(meta);
         m_grid->addWidget(tile, i / 2, i % 2);
     }
+}
+
+void CameraGridPanel::setThumbFrame(int camId, const QImage &frame)
+{
+    auto it = m_thumbLabels.find(camId);
+    if (it == m_thumbLabels.end()) {
+        return;
+    }
+    QLabel *lab = it.value();
+    if (!lab) {
+        return;
+    }
+    if (frame.isNull()) {
+        lab->clear();
+        lab->setText(QStringLiteral("Görüntü"));
+        return;
+    }
+    const QSize target = lab->size();
+    if (target.width() <= 0 || target.height() <= 0) {
+        return;
+    }
+    const QImage scaled = frame.scaled(target, Qt::KeepAspectRatio, Qt::FastTransformation);
+    lab->setPixmap(QPixmap::fromImage(scaled));
+    lab->setText(QString());
 }
 
 bool CameraGridPanel::eventFilter(QObject *obj, QEvent *event)

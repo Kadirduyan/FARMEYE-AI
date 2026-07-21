@@ -47,7 +47,9 @@ template <> constexpr inline auto farmeye::VideoGLWidget::qt_create_metaobjectda
         "QImage",
         "frame",
         "QList<farmeye::TrackOverlay>",
-        "tracks"
+        "tracks",
+        "setImage",
+        "setTracks"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -58,6 +60,14 @@ template <> constexpr inline auto farmeye::VideoGLWidget::qt_create_metaobjectda
         // Slot 'setFrame'
         QtMocHelpers::SlotData<void(const QImage &, const QVector<farmeye::TrackOverlay> &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 5, 6 }, { 0x80000000 | 7, 8 },
+        }}),
+        // Slot 'setImage'
+        QtMocHelpers::SlotData<void(const QImage &)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 5, 6 },
+        }}),
+        // Slot 'setTracks'
+        QtMocHelpers::SlotData<void(const QVector<farmeye::TrackOverlay> &)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 7, 8 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -84,6 +94,8 @@ void farmeye::VideoGLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _
         switch (_id) {
         case 0: _t->trackClicked((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 1: _t->setFrame((*reinterpret_cast<std::add_pointer_t<QImage>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QList<farmeye::TrackOverlay>>>(_a[2]))); break;
+        case 2: _t->setImage((*reinterpret_cast<std::add_pointer_t<QImage>>(_a[1]))); break;
+        case 3: _t->setTracks((*reinterpret_cast<std::add_pointer_t<QList<farmeye::TrackOverlay>>>(_a[1]))); break;
         default: ;
         }
     }
@@ -94,6 +106,13 @@ void farmeye::VideoGLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 1:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QList<farmeye::TrackOverlay> >(); break;
+            }
+            break;
+        case 3:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QList<farmeye::TrackOverlay> >(); break;
             }
             break;
@@ -124,14 +143,14 @@ int farmeye::VideoGLWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }

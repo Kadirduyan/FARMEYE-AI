@@ -43,8 +43,10 @@ template <> constexpr inline auto farmeye::AlertListPanel::qt_create_metaobjectd
         "",
         "farmeye::AlertEvent",
         "alert",
+        "namePersonRequested",
         "addAlert",
-        "requestPlay"
+        "requestPlay",
+        "requestName"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -52,12 +54,20 @@ template <> constexpr inline auto farmeye::AlertListPanel::qt_create_metaobjectd
         QtMocHelpers::SignalData<void(farmeye::AlertEvent)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 3, 4 },
         }}),
+        // Signal 'namePersonRequested'
+        QtMocHelpers::SignalData<void(farmeye::AlertEvent)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 3, 4 },
+        }}),
         // Slot 'addAlert'
-        QtMocHelpers::SlotData<void(const farmeye::AlertEvent &)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(const farmeye::AlertEvent &)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 3, 4 },
         }}),
         // Slot 'requestPlay'
-        QtMocHelpers::SlotData<void(const farmeye::AlertEvent &)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(const farmeye::AlertEvent &)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 3, 4 },
+        }}),
+        // Slot 'requestName'
+        QtMocHelpers::SlotData<void(const farmeye::AlertEvent &)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 3, 4 },
         }}),
     };
@@ -84,8 +94,10 @@ void farmeye::AlertListPanel::qt_static_metacall(QObject *_o, QMetaObject::Call 
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->playClipRequested((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
-        case 1: _t->addAlert((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
-        case 2: _t->requestPlay((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
+        case 1: _t->namePersonRequested((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
+        case 2: _t->addAlert((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
+        case 3: _t->requestPlay((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
+        case 4: _t->requestName((*reinterpret_cast<std::add_pointer_t<farmeye::AlertEvent>>(_a[1]))); break;
         default: ;
         }
     }
@@ -113,10 +125,26 @@ void farmeye::AlertListPanel::qt_static_metacall(QObject *_o, QMetaObject::Call 
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< farmeye::AlertEvent >(); break;
             }
             break;
+        case 3:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< farmeye::AlertEvent >(); break;
+            }
+            break;
+        case 4:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< farmeye::AlertEvent >(); break;
+            }
+            break;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (AlertListPanel::*)(farmeye::AlertEvent )>(_a, &AlertListPanel::playClipRequested, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (AlertListPanel::*)(farmeye::AlertEvent )>(_a, &AlertListPanel::namePersonRequested, 1))
             return;
     }
 }
@@ -140,14 +168,14 @@ int farmeye::AlertListPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     }
     return _id;
 }
@@ -156,5 +184,11 @@ int farmeye::AlertListPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_
 void farmeye::AlertListPanel::playClipRequested(farmeye::AlertEvent _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1);
+}
+
+// SIGNAL 1
+void farmeye::AlertListPanel::namePersonRequested(farmeye::AlertEvent _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 QT_WARNING_POP

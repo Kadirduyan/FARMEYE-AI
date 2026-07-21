@@ -1,9 +1,0 @@
-# ninja log v7
-74	1834	8060974509125289	CMakeFiles/farmeye_engine.dir/src/engine/VisionEngine.cpp.obj	f1acb50d253674b2
-88	3159	8060974509275204	CMakeFiles/farmeye_engine.dir/src/engine/preprocess.cpp.obj	4f1de7a4b781a886
-52	3328	8060974508905141	CMakeFiles/farmeye_engine.dir/src/engine/GstCameraCapture.cpp.obj	507abd36d786929
-117	4121	8060974509555267	CMakeFiles/farmeye_engine.dir/src/tracking/tracker.cpp.obj	12d9a655c492b04f
-102	4428	8060974509415295	CMakeFiles/farmeye_engine.dir/src/engine/class_policy.cpp.obj	950cbb2595d9edee
-42	4575	8060974508805122	CMakeFiles/farmeye_engine.dir/src/engine/engine_main.cpp.obj	d191917b915cba20
-64	5050	8060974509025169	CMakeFiles/farmeye_engine.dir/src/engine/InferenceEngine.cpp.obj	f570c56cf94b7483
-5051	7415	8060974558892341	farmeye_engine.exe	91a58f0b746d7d79

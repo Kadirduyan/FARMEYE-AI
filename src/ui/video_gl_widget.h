@@ -18,6 +18,8 @@ public:
 
 public slots:
     void setFrame(const QImage &frame, const QVector<farmeye::TrackOverlay> &tracks);
+    void setImage(const QImage &frame);
+    void setTracks(const QVector<farmeye::TrackOverlay> &tracks);
 
 signals:
     void trackClicked(int trackId);

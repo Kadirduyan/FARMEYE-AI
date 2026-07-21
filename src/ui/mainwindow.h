@@ -28,6 +28,7 @@ private slots:
     void onRunningChanged(bool running);
     void onAlert(farmeye::AlertEvent alert);
     void onPlayClip(farmeye::AlertEvent alert);
+    void onNamePerson(farmeye::AlertEvent alert);
     void onCameraSelected(int id, const QString &uri);
     void onResolutionChanged(int index);
     void onPcPreset();
@@ -36,6 +37,7 @@ private:
     void buildUi();
     void loadCamerasConfig();
     void loadTheme();
+    bool promptAndSetPersonName(int persistentId, const QString &currentName);
 
     PipelineController m_pipeline;
     SystemMonitor m_sysMonitor;
