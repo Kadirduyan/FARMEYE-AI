@@ -1,8 +1,28 @@
 {
   "cameras": [
-    { "id": 0, "name": "Camera 1", "uri": "webcam:0", "enabled": true },
-    { "id": 1, "name": "Camera 2", "uri": "", "enabled": false },
-    { "id": 2, "name": "Camera 3", "uri": "", "enabled": false },
-    { "id": 3, "name": "Camera 4", "uri": "", "enabled": false }
+    {
+      "id": 0,
+      "name": "Kamera 1 - Padok Yandan",
+      "uri": "C:/FarmEyeData/inekvideolar/videolar/demo_cam1_yandan.mp4",
+      "enabled": true
+    },
+    {
+      "id": 1,
+      "name": "Kamera 2 - Padok Arkadan",
+      "uri": "C:/FarmEyeData/inekvideolar/videolar/demo_cam2_arkadan.mp4",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "name": "Kamera 3 - Ahir Yemlik",
+      "uri": "C:/FarmEyeData/inekvideolar/videolar/demo_cam3_onden.mp4",
+      "enabled": true
+    },
+    {
+      "id": 3,
+      "name": "Kamera 4 - Ahir Genel",
+      "uri": "C:/FarmEyeData/inekvideolar/videolar/1.mp4",
+      "enabled": true
+    }
   ]
 }

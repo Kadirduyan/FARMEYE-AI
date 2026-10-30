@@ -4,18 +4,27 @@
 Calisma klasoru:
   C:\FarmEye\FARMEYE-AI\
 
-Veri:
+Veri (senin duzenin):
   C:\FarmEyeData\
-    01_cattle_side_rear\
-    02_cbvd5_videos\
-    03_cbvd5_labels\     <- etiketleri buraya
-    04_models_cache\
+    inekfotograflari\     <- egitim fotograflari
+      yandan\
+      arkadan\
+      onden\              <- klasor adini ASCII "onden" yap (Turkce karakter bozulabiliyor)
+      etiketler\          <- YOLO etiketleri (.txt) buraya (egitim icin)
+    inekvideolar\         <- egitim videolari
+      videolar\           <- mp4 dosyalari
+      CBVD-5.csv          <- VIA anotasyon (henuz YOLO degil)
+      annotations.zip     <- AVA paket (inek YOLO etiketi DEGIL)
+    kayitlar\             <- uygulamanin urettigi
+      gunluk_videolar\YYYY-MM-DD\   <- 1 gun
+      veriler\                      <- DB (davranis 1 ay)
+        farmeye.db
+        people.db
+        person_identities.json
 
-Kirmizi carpi nedeni:
-  Eski klasor Masaustu\OneDrive altindaydi; 5GB dolunca senkron bozuldu.
+Kod yollari:
+  src/app/farmeye_paths.h
 
-Ne yap:
-  1) Cursor: File > Open Folder > C:\FarmEye\FARMEYE-AI
-  2) Eski OneDrive\Desktop\FARMEYE AI klasorunu SIL veya yeniden adlandir
-     (yer acar, carpilari temizler)
-  3) Bundan sonra sadece C:\FarmEye\FARMEYE-AI kullan
+YOLO notu:
+  Canli tespit icin ek etiket GEREKMEZ (yolov8n COCO inek sinifi var).
+  Daha iyi ciftlik inegi modeli icin YOLO formatinda etiket gerekir.

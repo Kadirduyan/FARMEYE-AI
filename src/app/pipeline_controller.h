@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/farmeye_store.h"
 #include "app/frame_ring_buffer.h"
 #include "app/person_identity_store.h"
 #include "engine/class_policy.h"
@@ -70,6 +71,9 @@ public slots:
     bool setPersonName(int persistentId, const QString &name);
     QString personName(int persistentId) const;
     QString peopleStorageHint() const;
+    FarmEyeStore &farmStore() { return m_farm; }
+    const FarmEyeStore &farmStore() const { return m_farm; }
+    QString farmStorageHint() const;
 
 signals:
     void frameReady(const QImage &frame, const QVector<farmeye::TrackOverlay> &tracks);
@@ -102,6 +106,7 @@ private:
     bool m_running = false;
 
     PersonIdentityStore m_people;
+    FarmEyeStore m_farm;
 };
 
 } // namespace farmeye

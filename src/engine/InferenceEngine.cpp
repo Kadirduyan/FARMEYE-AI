@@ -140,7 +140,8 @@ bool InferenceEngine::infer(const cv::Mat &letterboxedBgr, std::vector<Detection
             const int top = static_cast<int>(cy - h * 0.5f);
             boxes.emplace_back(left, top, static_cast<int>(w), static_cast<int>(h));
             confidences.push_back(bestScore);
-            classIds.push_back(bestCls);
+            // Tek sınıflı özel inek modeli (yolov8n_cow.onnx -> numClasses == 1) için COCO cow=19 eşlemesi
+            classIds.push_back(numClasses == 1 ? 19 : bestCls);
         }
 
         std::vector<int> indices;

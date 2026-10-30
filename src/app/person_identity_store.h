@@ -10,8 +10,9 @@
 namespace farmeye {
 
 // Kalıcı insan kimliği.
-// Birincil: C:/FarmEyeData/person_identities.json (her zaman)
-// İkincil:  C:/FarmEyeData/people.db (SQLite eklentisi varsa)
+// Birincil: C:/FarmEyeData/kayitlar/veriler/person_identities.json
+// İkincil:  C:/FarmEyeData/kayitlar/veriler/people.db
+// Yol sabitleri: farmeye_paths.h
 //
 // Yanlış pozitiften kaçın: isimli eşleşme YÜKSEK eşik + margin ister.
 // excludeIds: aynı karede başka track'e verilmiş kalıcı ID'ler (örn. Kadir zaten ekranda).

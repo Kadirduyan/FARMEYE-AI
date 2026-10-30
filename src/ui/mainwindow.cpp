@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -19,6 +20,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -28,11 +30,52 @@ namespace farmeye {
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(QStringLiteral("FARMEYE™ AI"));
+    setWindowTitle(QStringLiteral("FARMEYE AI"));
     resize(1600, 960);
     buildUi();
     loadTheme();
     loadCamerasConfig();
+
+    // Tema yüklenmese bile butonlar görünsün
+    if (m_btnStart) {
+        m_btnStart->setMinimumHeight(52);
+        m_btnStart->setStyleSheet(
+            QStringLiteral("QPushButton { background:#22c55e; color:white; font-weight:800; "
+                           "font-size:15px; border:2px solid #4ade80; border-radius:12px; padding:14px; }"
+                           "QPushButton:disabled { background:#1a2a22; color:#6a7a70; border-color:#2a3a32; }"));
+    }
+    if (m_btnPause) {
+        m_btnPause->setMinimumHeight(52);
+        m_btnPause->setStyleSheet(
+            QStringLiteral("QPushButton { background:#7f1d1d; color:#fecaca; font-weight:800; "
+                           "font-size:15px; border:2px solid #ef4444; border-radius:12px; padding:14px; }"
+                           "QPushButton:disabled { background:#1c1618; color:#6a5a5a; border-color:#3a2a2c; }"));
+    }
+
+    // Açılışta otomatik başlat — kullanıcı BAŞLAT bulamasa da kamera/AI çalışsın
+    QTimer::singleShot(400, this, [this]() { onStart(); });
+
+    // Otomatik ekran görüntüsü modu (FARMEYE_AUTO_SCREENSHOTS=<dizin>)
+    const QString shotDir = qEnvironmentVariable("FARMEYE_AUTO_SCREENSHOTS");
+    if (!shotDir.isEmpty()) {
+        QDir().mkpath(shotDir);
+        QTimer::singleShot(4200, this, [this, shotDir]() {
+            this->grab().save(shotDir + QStringLiteral("/01_multi_camera_cow_tracking.png"));
+            if (m_cameras) {
+                m_cameras->selectCamera(1);
+            }
+        });
+        QTimer::singleShot(7800, this, [this, shotDir]() {
+            this->grab().save(shotDir + QStringLiteral("/02_rear_cow_behavior_analysis.png"));
+            if (m_cameras) {
+                m_cameras->selectCamera(2);
+            }
+        });
+        QTimer::singleShot(11400, this, [this, shotDir]() {
+            this->grab().save(shotDir + QStringLiteral("/03_barn_feeder_monitoring.png"));
+            qApp->quit();
+        });
+    }
 
     connect(&m_pipeline, &PipelineController::frameReady, this,
             [this](const QImage &, const QVector<farmeye::TrackOverlay> &tracks) {

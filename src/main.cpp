@@ -30,6 +30,8 @@ int main(int argc, char *argv[])
                                          .absoluteFilePath(QStringLiteral("plugins")));
 
     farmeye::MainWindow window;
-    window.show();
+    window.showMaximized();
+    window.raise();
+    window.activateWindow();
     return app.exec();
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-// GstCameraCapture — webcam / file / rtsp / usb için GStreamer yakalama.
+// GstCameraCapture — webcam / file / rtsp / usb için GStreamer + OpenCV VideoCapture yakalama.
 // Düşük CPU: videoscale + videorate (varsayılan 640x360 @ 12 fps).
 
 #include <cstdint>
@@ -35,8 +35,13 @@ public:
 private:
     bool m_open = false;
     std::string m_uri;
+    int m_maxW = 640;
+    int m_maxH = 360;
+    int m_fps = 12;
+    bool m_isFile = false;
     void *m_pipeline = nullptr;
     void *m_appsink = nullptr;
+    void *m_cvCap = nullptr;
 };
 
 } // namespace farmeye

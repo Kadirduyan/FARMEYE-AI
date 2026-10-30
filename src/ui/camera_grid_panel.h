@@ -28,6 +28,7 @@ public:
 public slots:
     void setThumbFrame(int camId, const QImage &frame);
     int activeId() const { return m_activeId; }
+    void selectCamera(int id);
 
 signals:
     void cameraSelected(int id, const QString &uri);

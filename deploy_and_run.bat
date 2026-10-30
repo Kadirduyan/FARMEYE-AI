@@ -3,46 +3,30 @@ setlocal EnableExtensions
 cd /d C:\FarmEye\FARMEYE-AI\build-ui
 
 set "VCPKG_QT=C:\vcpkg\installed\x64-windows"
-set "QT683=C:\Qt\6.8.3\msvc2022_64"
 set "GST=%LOCALAPPDATA%\Programs\gstreamer\1.0\msvc_x86_64"
 
-echo === Deploy Qt plugins ===
+echo === Deploy Qt plugins (vcpkg) ===
 if not exist platforms mkdir platforms
 if not exist styles mkdir styles
 if not exist imageformats mkdir imageformats
+if not exist sqldrivers mkdir sqldrivers
 
-REM Prefer vcpkg plugins (DLL'ler vcpkg'ten geldi)
+copy /Y "%VCPKG_QT%\bin\Qt6*.dll" . >nul 2>nul
+copy /Y "%VCPKG_QT%\bin\opencv_*.dll" . >nul 2>nul
+
 if exist "%VCPKG_QT%\Qt6\plugins\platforms\qwindows.dll" (
   copy /Y "%VCPKG_QT%\Qt6\plugins\platforms\qwindows.dll" platforms\ >nul
-  echo Copied vcpkg Qt6\plugins\platforms
+  echo Copied vcpkg Qt6\plugins\platforms\qwindows.dll
 ) else if exist "%VCPKG_QT%\plugins\platforms\qwindows.dll" (
   copy /Y "%VCPKG_QT%\plugins\platforms\qwindows.dll" platforms\ >nul
-  echo Copied vcpkg plugins\platforms
-) else if exist "%QT683%\plugins\platforms\qwindows.dll" (
-  copy /Y "%QT683%\plugins\platforms\qwindows.dll" platforms\ >nul
-  echo Copied Qt 6.8.3 platforms
-) else (
-  echo ERROR: qwindows.dll not found
-  exit /b 1
+  echo Copied vcpkg plugins\platforms\qwindows.dll
 )
 
 if exist "%VCPKG_QT%\Qt6\plugins\styles\qmodernwindowsstyle.dll" copy /Y "%VCPKG_QT%\Qt6\plugins\styles\qmodernwindowsstyle.dll" styles\ >nul 2>nul
-if exist "%VCPKG_QT%\plugins\styles\qmodernwindowsstyle.dll" copy /Y "%VCPKG_QT%\plugins\styles\qmodernwindowsstyle.dll" styles\ >nul 2>nul
 if exist "%VCPKG_QT%\Qt6\plugins\styles\qwindowsvistastyle.dll" copy /Y "%VCPKG_QT%\Qt6\plugins\styles\qwindowsvistastyle.dll" styles\ >nul 2>nul
-if exist "%QT683%\plugins\styles\qmodernwindowsstyle.dll" copy /Y "%QT683%\plugins\styles\qmodernwindowsstyle.dll" styles\ >nul 2>nul
-
-REM Try windeployqt if available
-where windeployqt >nul 2>&1
-if not errorlevel 1 (
-  windeployqt --release --no-translations FarmEyeAI.exe
-) else if exist "%QT683%\bin\windeployqt.exe" (
-  "%QT683%\bin\windeployqt.exe" --release --no-translations FarmEyeAI.exe
-) else if exist "%VCPKG_QT%\tools\Qt6\bin\windeployqt.exe" (
-  "%VCPKG_QT%\tools\Qt6\bin\windeployqt.exe" --release --no-translations FarmEyeAI.exe
-)
+if exist "%VCPKG_QT%\Qt6\plugins\sqldrivers\qsqlite.dll" copy /Y "%VCPKG_QT%\Qt6\plugins\sqldrivers\qsqlite.dll" sqldrivers\ >nul 2>nul
 
 echo === Check platforms ===
-dir platforms\qwindows.dll
 if not exist platforms\qwindows.dll (
   echo STILL MISSING qwindows.dll
   exit /b 2

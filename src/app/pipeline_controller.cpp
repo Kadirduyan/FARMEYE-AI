@@ -1,5 +1,6 @@
 #include "pipeline_controller.h"
 
+#include "app/behavior_analyzer.h"
 #include "app/person_identity_store.h"
 #include "engine/GstCameraCapture.h"
 #include "engine/InferenceEngine.h"
@@ -168,11 +169,13 @@ class InferenceWorker : public QObject {
 public:
     explicit InferenceWorker(const std::array<FrameRingBuffer *, PipelineController::kMaxCameras> &rings,
                              std::atomic<int> *activeId, PersonIdentityStore *people,
-                             std::atomic<int> *bindNameId)
+                             std::atomic<int> *bindNameId, FarmEyeStore *farm)
         : m_rings(rings)
         , m_activeId(activeId)
         , m_people(people)
         , m_bindNameId(bindNameId)
+        , m_farm(farm)
+        , m_behavior(farm)
     {
     }
 
@@ -295,6 +298,7 @@ private:
                 ghosts.clear();
                 alertedKeys.clear();
                 framesSeen.clear();
+                m_behavior.reset();
             }
 
             std::vector<uint8_t> bgrData;
@@ -319,6 +323,10 @@ private:
             }
             auto classified = suppressNestedHumans(applyClassPolicy(dets));
             auto tracks = tracker.update(classified);
+
+            // İnek davranış: su/yem ROI, yatma, topallık şüphesi → FarmEyeStore
+            const double dtSec = intervalMs / 1000.0;
+            m_behavior.update(camId, w, h, tracks, dtSec);
 
             QVector<TrackOverlay> overlays;
 
@@ -549,6 +557,8 @@ private:
 
     PersonIdentityStore *m_people = nullptr;
     std::atomic<int> *m_bindNameId = nullptr;
+    FarmEyeStore *m_farm = nullptr;
+    BehaviorAnalyzer m_behavior;
 };
 
 // ---------------------------------------------------------------------------
@@ -655,7 +665,7 @@ void PipelineController::ensureWorkers()
             ringPtrs[i] = m_rings[i].get();
         }
 
-        m_inferWorker = new InferenceWorker(ringPtrs, &m_activeId, &m_people, &m_bindNameId);
+        m_inferWorker = new InferenceWorker(ringPtrs, &m_activeId, &m_people, &m_bindNameId, &m_farm);
         m_inferWorker->moveToThread(&m_inferThread);
 
         connect(&m_inferThread, &QThread::finished, m_inferWorker, &QObject::deleteLater);
@@ -756,6 +766,11 @@ QString PipelineController::personName(int persistentId) const
 QString PipelineController::peopleStorageHint() const
 {
     return m_people.storageHint();
+}
+
+QString PipelineController::farmStorageHint() const
+{
+    return m_farm.storageHint();
 }
 
 } // namespace farmeye

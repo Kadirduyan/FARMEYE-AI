@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(FARMEYE_BUILD_ENGINE "Build farmeye_engine console" ON)
 option(FARMEYE_BUILD_UI "Build Qt FarmEyeAI UI" ON)
 
-find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs highgui dnn)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs highgui dnn videoio)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src/engine/Engine.cmake)
 
 set(ENGINE_COMMON
@@ -51,6 +51,8 @@ if(FARMEYE_BUILD_UI)
         src/app/frame_ring_buffer.cpp
         src/app/system_monitor.cpp
         src/app/person_identity_store.cpp
+        src/app/farmeye_store.cpp
+        src/app/behavior_analyzer.cpp
         src/ui/mainwindow.cpp
         src/ui/video_gl_widget.cpp
         src/ui/alert_list_panel.cpp
@@ -69,6 +71,9 @@ if(FARMEYE_BUILD_UI)
         src/app/frame_ring_buffer.h
         src/app/system_monitor.h
         src/app/person_identity_store.h
+        src/app/farmeye_store.h
+        src/app/behavior_analyzer.h
+        src/app/farmeye_paths.h
         resources/app.qrc
     )
 

@@ -243,3 +243,24 @@ Yapilanlar (temizlik):
 - OneDrive duzeltmesi: README.md ve .gitignore dizin degildi; gercek dosya olarak yeniden olusturuldu
 - Korunanlar: build-ui, src/app|engine|ui|tracking|main.cpp, models/, config/, resources/, CMakeLists.txt, build_ui.bat, YAPILANLAR.txt, PROJE_YAPISI.txt, .vscode, engine build scriptleri
 
+
+ADIM 21 - FarmEyeStore (saha veritabani)
+----------------------------------------
+Tarih: 21 Temmuz 2026
+
+Yapilanlar:
+- src/app/farmeye_store.h/.cpp eklendi (C:/FarmEyeData/farmeye.db)
+- Tablolar: animals, video_recordings, behavior_events, behavior_daily
+- Video: C:/FarmEyeData/videos/YYYY-MM-DD/ — gunluk purge
+- Davranis olaylari + gunluk ozet — 30 gun purge
+- PipelineController icine m_farm baglandi (acilista purge)
+- Sonraki: BAŞLAT ile video encode, davranis dedektoru (su/yem/yatma/topallik)
+
+
+ADIM 22 - Otomatik inek etiketi + BehaviorAnalyzer
+-------------------------------------------------
+Tarih: 21 Temmuz 2026
+
+- scripts/auto_label_cows.py: 143 foto -> 138 etiketli, 5 bos
+- behavior_analyzer: su/yem ROI, yatma, topallik -> FarmEyeStore
+- Pipeline baglandi

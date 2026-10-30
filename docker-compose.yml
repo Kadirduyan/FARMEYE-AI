@@ -1,0 +1,30 @@
+services:
+  farmeye-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: farmeye-ai-engine
+    environment:
+      - FARMEYE_DATA_ROOT=/data
+    volumes:
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./data:/data
+    command: ["/data/inekvideolar/videolar/1.mp4", "/app/models/yolov8n_cow.onnx"]
+    restart: unless-stopped
+
+  farmeye-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: farmeye-ai-ui
+    environment:
+      - QT_QPA_PLATFORM=offscreen
+      - FARMEYE_DATA_ROOT=/data
+    volumes:
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./data:/data
+    entrypoint: ["/app/FarmEyeAI"]
+    profiles:
+      - ui

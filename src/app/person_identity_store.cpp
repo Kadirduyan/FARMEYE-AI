@@ -1,4 +1,5 @@
 #include "person_identity_store.h"
+#include "farmeye_paths.h"
 
 #include <QDir>
 #include <QFile>
@@ -59,13 +60,13 @@ std::vector<float> histFromJson(const QJsonArray &a)
 } // namespace
 
 PersonIdentityStore::PersonIdentityStore(const std::string &dbPath)
-    : m_dbPath(dbPath.empty() ? "C:/FarmEyeData/people.db" : dbPath)
-    , m_jsonPath("C:/FarmEyeData/person_identities.json")
+    : m_dbPath(dbPath.empty() ? paths::peopleDb().toStdString() : dbPath)
+    , m_jsonPath(paths::peopleJson().toStdString())
     , m_connName(QStringLiteral("farmeye_people_%1").arg(QUuid::createUuid().toString(QUuid::WithoutBraces)))
 {
-    QDir().mkpath(QStringLiteral("C:/FarmEyeData"));
+    QDir().mkpath(paths::databases());
 #if defined(FARMEYE_SOURCE_DIR)
-    if (!QDir().exists(QStringLiteral("C:/FarmEyeData"))) {
+    if (!QDir().exists(paths::dataRoot())) {
         m_dbPath = std::string(FARMEYE_SOURCE_DIR) + "/data/people.db";
         m_jsonPath = std::string(FARMEYE_SOURCE_DIR) + "/data/person_identities.json";
         QDir().mkpath(QFileInfo(QString::fromStdString(m_jsonPath)).absolutePath());
@@ -426,9 +427,9 @@ int PersonIdentityStore::count() const
 QString PersonIdentityStore::storageHint() const
 {
     if (m_sqlOk) {
-        return QStringLiteral("C:/FarmEyeData/people.db + person_identities.json");
+        return QStringLiteral("kayitlar/veriler/people.db + person_identities.json");
     }
-    return QStringLiteral("C:/FarmEyeData/person_identities.json");
+    return QStringLiteral("kayitlar/veriler/person_identities.json");
 }
 
 } // namespace farmeye

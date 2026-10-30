@@ -1,7 +1,12 @@
 #include "GstCameraCapture.h"
 
+#include <chrono>
 #include <cstring>
 #include <iostream>
+#include <thread>
+
+#include <opencv2/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 
 #if defined(HAVE_GSTREAMER)
 #  include <gst/gst.h>
@@ -11,8 +16,6 @@
 namespace farmeye {
 
 namespace {
-
-#if defined(HAVE_GSTREAMER)
 
 bool startsWith(const std::string &s, const char *prefix)
 {
@@ -61,7 +64,8 @@ int parseDeviceIndex(const std::string &uri, const char *prefix)
     return 0;
 }
 
-// Güvenilir kuyruk: ölçek + BGR + drop (videorate yok — webcam'lerde kareyi kesebiliyor)
+#if defined(HAVE_GSTREAMER)
+
 std::string appsinkTail(int maxW, int maxH)
 {
     if (maxW < 160) {
@@ -76,7 +80,6 @@ std::string appsinkTail(int maxW, int maxH)
            " ! appsink name=sink emit-signals=false max-buffers=1 drop=true sync=false";
 }
 
-// En basit: sadece BGR appsink (ölçek yok) — son çare
 std::string appsinkTailSimple()
 {
     return "videoconvert ! video/x-raw,format=BGR ! "
@@ -85,8 +88,6 @@ std::string appsinkTailSimple()
 
 std::string buildWebcamPipeline(int idx, int maxW, int maxH, int variant)
 {
-    // variant 0: ölçekli (tercih)
-    // variant 1: ölçeksiz basit
     if (variant == 0) {
         return "mfvideosrc device-index=" + std::to_string(idx) + " ! " + appsinkTail(maxW, maxH);
     }
@@ -154,10 +155,8 @@ bool tryStartAndVerify(const std::string &pipelineStr, GstElement **outPipe, Gst
         return false;
     }
 
-    // ASYNC tamamlanmasını bekle
     gst_element_get_state(pipeline, nullptr, nullptr, 2 * GST_SECOND);
 
-    // İlk kare gelmezse pipeline işe yaramıyor say
     GstSample *sample =
         gst_app_sink_try_pull_sample(GST_APP_SINK(sink), 2500 * GST_MSECOND);
     if (!sample) {
@@ -188,20 +187,20 @@ bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH)
     return open(uri, maxW, maxH, 12);
 }
 
-bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH, int /*fps*/)
+bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH, int fps)
 {
     close();
     m_uri = uri;
+    m_maxW = maxW > 0 ? maxW : 640;
+    m_maxH = maxH > 0 ? maxH : 360;
+    m_fps = fps > 0 ? fps : 12;
+    m_isFile = looksLikeFile(uri);
+
     if (uri.empty()) {
         return false;
     }
 
-#if !defined(HAVE_GSTREAMER)
-    (void)maxW;
-    (void)maxH;
-    std::cerr << "[GstCameraCapture] GStreamer bagli degil (HAVE_GSTREAMER yok).\n";
-    return false;
-#else
+#if defined(HAVE_GSTREAMER)
     static bool gstInited = false;
     if (!gstInited) {
         gst_init(nullptr, nullptr);
@@ -211,20 +210,39 @@ bool GstCameraCapture::open(const std::string &uri, int maxW, int maxH, int /*fp
     GstElement *pipeline = nullptr;
     GstElement *sink = nullptr;
 
-    // 0: ölçekli, 1: basit — ilk kare doğrulamalı
     for (int variant = 0; variant < 2; ++variant) {
-        const std::string pipe = buildPipeline(uri, maxW, maxH, variant);
+        const std::string pipe = buildPipeline(uri, m_maxW, m_maxH, variant);
         if (tryStartAndVerify(pipe, &pipeline, &sink)) {
             m_pipeline = pipeline;
             m_appsink = sink;
             m_open = true;
-            std::cout << "[GstCameraCapture] OK variant=" << variant << "\n";
+            std::cout << "[GstCameraCapture] OK (GStreamer) variant=" << variant << "\n";
             return true;
         }
     }
-
-    return false;
 #endif
+
+    // OpenCV VideoCapture fallback (GStreamer yoksa veya acamazsa)
+    auto *cap = new cv::VideoCapture();
+    bool opened = false;
+    if (uri == "webcam" || startsWith(uri, "webcam:") || uri == "usb" || startsWith(uri, "usb:")) {
+        const int idx = parseDeviceIndex(uri, startsWith(uri, "usb") ? "usb" : "webcam");
+        opened = cap->open(idx);
+    } else if (m_isFile) {
+        opened = cap->open(normalizeFilePath(uri));
+    } else {
+        opened = cap->open(uri);
+    }
+
+    if (opened && cap->isOpened()) {
+        m_cvCap = cap;
+        m_open = true;
+        std::cout << "[GstCameraCapture] OK (OpenCV VideoCapture): " << uri << "\n";
+        return true;
+    }
+
+    delete cap;
+    return false;
 }
 
 void GstCameraCapture::close()
@@ -238,18 +256,60 @@ void GstCameraCapture::close()
         gst_object_unref(static_cast<GstElement *>(m_appsink));
     }
 #endif
+    if (m_cvCap) {
+        auto *cap = static_cast<cv::VideoCapture *>(m_cvCap);
+        cap->release();
+        delete cap;
+    }
     m_pipeline = nullptr;
     m_appsink = nullptr;
+    m_cvCap = nullptr;
     m_open = false;
 }
 
 bool GstCameraCapture::read(FrameBuffer &out)
 {
     out = {};
-#if !defined(HAVE_GSTREAMER)
-    return false;
-#else
-    if (!m_open || !m_appsink) {
+    if (!m_open) {
+        return false;
+    }
+
+    if (m_cvCap) {
+        auto *cap = static_cast<cv::VideoCapture *>(m_cvCap);
+        cv::Mat frame;
+        if (!cap->read(frame) || frame.empty()) {
+            if (m_isFile) {
+                cap->set(cv::CAP_PROP_POS_FRAMES, 0);
+                if (!cap->read(frame) || frame.empty()) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        cv::Mat resized;
+        if (m_maxW > 0 && m_maxH > 0 && (frame.cols != m_maxW || frame.rows != m_maxH)) {
+            cv::resize(frame, resized, cv::Size(m_maxW, m_maxH), 0, 0, cv::INTER_AREA);
+        } else {
+            resized = frame;
+        }
+        if (!resized.isContinuous()) {
+            resized = resized.clone();
+        }
+        out.width = resized.cols;
+        out.height = resized.rows;
+        out.channels = 3;
+        const size_t bytes = static_cast<size_t>(out.width) * static_cast<size_t>(out.height) * 3u;
+        out.data.resize(bytes);
+        std::memcpy(out.data.data(), resized.data, bytes);
+        if (m_isFile && m_fps > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000 / m_fps));
+        }
+        return true;
+    }
+
+#if defined(HAVE_GSTREAMER)
+    if (!m_appsink) {
         return false;
     }
 
@@ -292,6 +352,8 @@ bool GstCameraCapture::read(FrameBuffer &out)
     gst_buffer_unmap(buffer, &map);
     gst_sample_unref(sample);
     return true;
+#else
+    return false;
 #endif
 }
 

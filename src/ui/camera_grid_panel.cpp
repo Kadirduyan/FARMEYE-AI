@@ -168,18 +168,23 @@ void CameraGridPanel::setThumbFrame(int camId, const QImage &frame)
     lab->setText(QString());
 }
 
+void CameraGridPanel::selectCamera(int id)
+{
+    if (id >= 0 && id < m_cams.size()) {
+        m_activeId = id;
+        rebuild();
+        emit cameraSelected(id, m_cams[id].uri);
+    }
+}
+
 bool CameraGridPanel::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress) {
         auto *w = qobject_cast<QWidget *>(obj);
         if (w) {
             const int id = w->property("camId").toInt();
-            if (id >= 0 && id < m_cams.size()) {
-                m_activeId = id;
-                rebuild();
-                emit cameraSelected(id, m_cams[id].uri);
-                return true;
-            }
+            selectCamera(id);
+            return true;
         }
     }
     return QWidget::eventFilter(obj, event);
